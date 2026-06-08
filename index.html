@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Ramalepe Brickyard · Invoice & Quotation (Loan Periods)</title>
+    <title>Ramalepe Brickyard · Invoice & Quotation</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -185,47 +185,6 @@
             font-size: 1rem;
         }
 
-        .loan-period-group {
-            grid-column: span 2;
-            background: #f8fafc;
-            padding: 8px 12px;
-            border-radius: 18px;
-            margin-top: 4px;
-            border: 1px solid #e2e8f0;
-        }
-
-        .loan-period-group .period-label {
-            font-weight: 700;
-            color: #1e2f4d;
-            font-size: 0.85rem;
-            margin-right: 15px;
-        }
-
-        .radio-container {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-            flex-wrap: wrap;
-            margin-top: 6px;
-        }
-
-        .radio-container label {
-            font-weight: 500;
-            font-size: 0.85rem;
-            color: #1f3a5f;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-        }
-
-        .info-note {
-            font-size: 0.7rem;
-            color: #4a627a;
-            margin-top: 6px;
-            font-style: italic;
-        }
-
         .generate-btn {
             grid-column: span 2;
             background: #1e2f4d;
@@ -288,7 +247,6 @@
             }
 
             .section-title,
-            .loan-period-group,
             .generate-btn,
             .manual-add-btn,
             .note,
@@ -305,6 +263,10 @@
             color: #3d5675;
             font-size: 0.85rem;
             font-weight: normal;
+        }
+        
+        .date-field-group {
+            grid-column: span 1;
         }
     </style>
 </head>
@@ -336,6 +298,11 @@
             <label>Client Name</label>
             <input type="text" id="clientName" placeholder="Enter client name">
         </div>
+        
+        <div class="field-group date-field-group">
+            <label>📅 Document Date</label>
+            <input type="date" id="documentDate">
+        </div>
 
         <!-- ========= DELIVERY TYPE ========= -->
         <div class="field-group" style="grid-column: span 2;">
@@ -363,28 +330,6 @@
         <div class="field-group"><label>Bou Sand Half (R500)</label><input type="number" id="bouHalf" min="0" value="0"></div>
         <div class="field-group"><label>River Stones Full (R900)</label><input type="number" id="stonesFull" min="0" value="0"></div>
         <div class="field-group"><label>River Stones Half (R500)</label><input type="number" id="stonesHalf" min="0" value="0"></div>
-
-        <div class="section-title">💰 Loans (amount lent)</div>
-        <div class="field-group"><label>Amount lent (R)</label><input type="number" id="loanPaid" min="0" step="0.01" placeholder="e.g. 500"></div>
-
-        <div id="loanPeriodSelector" class="loan-period-group" style="display: none;">
-            <div class="period-label">📆 Loan term for interest calculation (Quotation only)</div>
-
-            <div class="radio-container">
-                <label>
-                    <input type="radio" name="loanPeriod" value="14" checked> 14 days loan
-                </label>
-                <label>
-                    <input type="radio" name="loanPeriod" value="28"> 28 days loan
-                </label>
-            </div>
-
-            <div class="info-note">
-                ✅ 14d: &lt;R600 → 35% | ≥R600 → 29%
-                &nbsp;&nbsp;|&nbsp;&nbsp;
-                ✅ 28d: &lt;R600 → 45% | ≥R600 → 40%
-            </div>
-        </div>
 
         <div class="section-title">➕ Adjustments</div>
 
@@ -422,7 +367,6 @@
     const quotationBtn = document.getElementById("quotationModeBtn");
     const paidToggleArea = document.getElementById("paidToggleArea");
     const toggleSwitch = document.getElementById("toggleSwitch");
-    const loanPeriodSelectorDiv = document.getElementById("loanPeriodSelector");
 
     function setMode(selectedMode) {
         mode = selectedMode;
@@ -432,10 +376,6 @@
             quotationBtn.classList.remove("active");
             docTypeSpan.innerText = "Invoice";
             paidToggleArea.style.display = "flex";
-
-            if (loanPeriodSelectorDiv) {
-                loanPeriodSelectorDiv.style.display = "none";
-            }
         } else {
             quotationBtn.classList.add("active");
             invoiceBtn.classList.remove("active");
@@ -443,10 +383,6 @@
             paidToggleArea.style.display = "none";
             paidEnabled = false;
             toggleSwitch.classList.remove("active");
-
-            if (loanPeriodSelectorDiv) {
-                loanPeriodSelectorDiv.style.display = "block";
-            }
         }
     }
 
@@ -461,6 +397,10 @@
             toggleSwitch.classList.remove("active");
         }
     }
+
+    // Set today's date as default value for date input
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById("documentDate").value = today;
 
     setMode("invoice");
 
@@ -517,15 +457,6 @@
         stonesHalf: { price: 500, name: "River Stones (Half Load)" }
     };
 
-    function getInterestRateForQuotation(loanAmount, loanPeriodDays) {
-        if (loanPeriodDays === "14") {
-            return loanAmount < 600 ? 0.35 : 0.29;
-        } else if (loanPeriodDays === "28") {
-            return loanAmount < 600 ? 0.45 : 0.40;
-        }
-        return loanAmount < 600 ? 0.35 : 0.29;
-    }
-
     function generatePDF() {
         const { jsPDF } = window.jspdf;
 
@@ -539,7 +470,11 @@
         let y = 10;
 
         let client = document.getElementById("clientName").value || "N/A";
-        let today = new Date().toLocaleDateString("en-ZA");
+        
+        // Get manual date or use today's date as fallback
+        let manualDate = document.getElementById("documentDate").value;
+        let displayDate = manualDate ? new Date(manualDate).toLocaleDateString("en-ZA") : new Date().toLocaleDateString("en-ZA");
+        
         let numberFormatted = getNextDocumentNumber();
 
         let docNumber = (mode === "invoice" ? "RB-INV-" : "RB-QUO-") + numberFormatted;
@@ -551,7 +486,7 @@
 
         logo.src = "assets/logo.jpeg";
         paidImg.src = "assets/paid.png";
-        signature.src = "assets/signature.jpeg";
+        signature.src = "assets/signature.png";
 
         let imagesLoaded = 0;
 
@@ -585,14 +520,14 @@
             doc.setFont(undefined, "normal");
             doc.setFontSize(7);
             doc.text("Building materials & aggregates", 40, 15);
-            doc.text("073 725 2514", 40, 20);
+            doc.text("065 687 7987 / 072 880 6741", 40, 20);
 
             doc.setFontSize(12);
             doc.text(title, 150, 10);
 
             doc.setFontSize(7);
             doc.text(docNumber, 150, 15);
-            doc.text(today, 150, 20);
+            doc.text(displayDate, 150, 20);
 
             y = 25;
             doc.line(8, y, 202, y);
@@ -618,7 +553,6 @@
             y += 3;
 
             let grandTotal = 0;
-            let distantDeliveryExtra = 0;
 
             function checkPageSpace() {
                 if (y > 260) {
@@ -685,7 +619,6 @@
                 doc.text("R100.00", 175, y);
                 y += 3.5;
                 grandTotal += 100;
-                distantDeliveryExtra = 100;
             }
 
             // MANUAL ITEMS
@@ -698,37 +631,6 @@
                     addRow(name, qty, price);
                 }
             });
-
-            // LOAN SECTION
-            let loanAmount = parseFloat(document.getElementById("loanPaid")?.value) || 0;
-            if (loanAmount > 0) {
-                checkPageSpace();
-                if (mode === "quotation") {
-                    let selectedPeriodElem = document.querySelector('input[name="loanPeriod"]:checked');
-                    let loanPeriod = selectedPeriodElem ? selectedPeriodElem.value : "14";
-                    let interestRate = getInterestRateForQuotation(loanAmount, loanPeriod);
-                    let interestAmount = loanAmount * interestRate;
-                    let totalRepayment = loanAmount + interestAmount;
-                    let percentDisplay = (interestRate * 100).toFixed(0);
-
-                    doc.setFontSize(7);
-                    doc.text("Amount lent", 8, y);
-                    doc.text("R" + loanAmount.toFixed(2), 175, y);
-                    y += 3.5;
-                    checkPageSpace();
-                    let interestLabel = `Interest charged (${percentDisplay}% for ${loanPeriod} days)`;
-                    doc.text(interestLabel, 8, y);
-                    doc.text("R" + interestAmount.toFixed(2), 175, y);
-                    y += 3.5;
-                    grandTotal += totalRepayment;
-                } else {
-                    doc.setFontSize(7);
-                    doc.text("Loan amount received", 8, y);
-                    doc.text("R" + loanAmount.toFixed(2), 175, y);
-                    y += 3.5;
-                    grandTotal += loanAmount;
-                }
-            }
 
             let extra = parseFloat(document.getElementById("extraPayment")?.value) || 0;
             let discount = parseFloat(document.getElementById("discount")?.value) || 0;
@@ -771,14 +673,29 @@
                 doc.text("Banking Details", 8, bankingY);
                 doc.setFont(undefined, "normal");
                 bankingY += 3;
-                doc.text("Capitec Bank | Mr AN Ramalepe", 8, bankingY);
+                doc.text("RAMALEPE BRICKYARD (PTY) LTD", 8, bankingY);
                 bankingY += 3;
-                doc.text("Acc: 1679556728 | Tel: 073 725 2514", 8, bankingY);
+                doc.text("Capitec Bank | Acc: 1055419845", 8, bankingY);
+                bankingY += 3;
+                doc.text("Tel: 065 687 7987 / 072 880 6741", 8, bankingY);
+            } else if (mode === "invoice") {
+                // Add banking details on invoices as well for reference
+                let bankingY = pageHeight - 45;
+                doc.setFontSize(7);
+                doc.setFont(undefined, "bold");
+                doc.text("Banking Details", 8, bankingY);
+                doc.setFont(undefined, "normal");
+                bankingY += 3;
+                doc.text("RAMALEPE BRICKYARD (PTY) LTD", 8, bankingY);
+                bankingY += 3;
+                doc.text("Capitec Bank | Acc: 1055419845", 8, bankingY);
+                bankingY += 3;
+                doc.text("Tel: 065 687 7987 / 072 880 6741", 8, bankingY);
             }
 
             let signatureY = pageHeight - 25;
             try {
-                doc.addImage(signature, "JPEG", 150, signatureY - 6, 20, 8);
+                doc.addImage(signature, "PNG", 150, signatureY - 6, 20, 8);
             } catch (e) {}
             doc.setFontSize(6);
             doc.text("Authorized signature", 150, signatureY + 4);
