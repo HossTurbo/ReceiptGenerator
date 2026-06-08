@@ -273,26 +273,26 @@
 
 <body>
 
+<script>
+const correctPin = "2003";
 
-    <script>
-const correctPin = "2026"; // Change this PIN
-
-let enteredPin = prompt("Enter PIN to access RAMALEPE BRICKYARD");
+const enteredPin = prompt("Enter PIN to access RAMALEPE BRICKYARD");
 
 if (enteredPin !== correctPin) {
-    document.body.innerHTML = `
-        <div style="
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            height:100vh;
-            font-family:Arial,sans-serif;
-        ">
+    document.write(`
+        <html>
+        <head>
+            <title>Access Denied</title>
+        </head>
+        <body style="display:flex;justify-content:center;align-items:center;height:100vh;font-family:Arial;">
             <h1>Access Denied</h1>
-        </div>
-    `;
+        </body>
+        </html>
+    `);
+    document.close();
     throw new Error("Invalid PIN");
 }
+    
 </script>
 
 <div class="card">
