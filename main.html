@@ -273,28 +273,6 @@
 
 <body>
 
-<script>
-const correctPin = "2003";
-
-const enteredPin = prompt("Enter PIN to access RAMALEPE BRICKYARD");
-
-if (enteredPin !== correctPin) {
-    document.write(`
-        <html>
-        <head>
-            <title>Access Denied</title>
-        </head>
-        <body style="display:flex;justify-content:center;align-items:center;height:100vh;font-family:Arial;">
-            <h1>Access Denied</h1>
-        </body>
-        </html>
-    `);
-    document.close();
-    throw new Error("Invalid PIN");
-}
-    
-</script>
-
 <div class="card">
     <h1>🧱 RAMALEPE BRICKYARD</h1>
     <div class="subtitle">Building Materials · Invoice & Quotation Generator</div>
