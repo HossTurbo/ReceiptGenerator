@@ -312,8 +312,8 @@
 <body>
 
 <div class="card">
-    <h1>🛠️ AllServe Traders</h1>
-    <div class="subtitle">Invoice & Quotation Generator · selling made simple</div>
+    <h1>🧱 RAMALEPE BRICKYARD</h1>
+    <div class="subtitle">Building Materials · Invoice & Quotation Generator</div>
 
     <div class="mode-bar">
         <button class="mode-btn" id="invoiceModeBtn" onclick="setMode('invoice')">📄 Invoice</button>
@@ -337,24 +337,32 @@
             <input type="text" id="clientName" placeholder="Enter client name">
         </div>
 
-        <div class="section-title">🧤 PPE</div>
+        <!-- ========= DELIVERY TYPE ========= -->
+        <div class="field-group" style="grid-column: span 2;">
+            <label>🚚 Delivery Type</label>
+            <select id="deliveryType">
+                <option value="local">Local Delivery (included)</option>
+                <option value="distant">Distant Delivery (+R100 Sand/Stone)</option>
+            </select>
+        </div>
 
-        <div class="field-group"><label>Short-Cut Boots (R340)</label><input type="number" id="bootsShort" min="0" placeholder="0"></div>
-        <div class="field-group"><label>High-Cut Boots (R420)</label><input type="number" id="bootsHigh" min="0" placeholder="0"></div>
-        <div class="field-group"><label>Lace-less Boots (R450)</label><input type="number" id="bootsLaceless" min="0" placeholder="0"></div>
-        <div class="field-group"><label>Standard Navy Work Suit (R220)</label><input type="number" id="suitNavy" min="0" placeholder="0"></div>
-        <div class="field-group"><label>Fire Resistant Work Suit (R400)</label><input type="number" id="suitFire" min="0" placeholder="0"></div>
-        <div class="field-group"><label>Laboratory Coat (R150)</label><input type="number" id="labCoat" min="0" placeholder="0"></div>
-        <div class="field-group"><label>Goggles (R40)</label><input type="number" id="goggles" min="0" placeholder="0"></div>
-        <div class="field-group"><label>Gloves (R30)</label><input type="number" id="gloves" min="0" placeholder="0"></div>
-        <div class="field-group"><label>Reflector (R130)</label><input type="number" id="reflector" min="0" placeholder="0"></div>
-        <div class="field-group"><label>Helmet (R30)</label><input type="number" id="helmet" min="0" placeholder="0"></div>
+        <div class="section-title">🧱 BRICKS & BLOCKS</div>
 
-        <div class="field-group"><label>🔥 Fire Suit + goggles + gloves (R450)</label><input type="number" id="comboFire" min="0" placeholder="0"></div>
-        <div class="field-group"><label>🔵 Navy Suit + goggles + gloves (R270)</label><input type="number" id="comboNavy" min="0" placeholder="0"></div>
+        <div class="field-group"><label>RDP Bricks (R3.75 ea)</label><input type="number" id="rdp" min="0" value="0" step="1"></div>
+        <div class="field-group"><label>Paving Bricks (R2.00 ea)</label><input type="number" id="paving" min="0" value="0" step="1"></div>
+        <div class="field-group"><label>ForeHalves (R1.90 ea)</label><input type="number" id="forehalves" min="0" value="0" step="1"></div>
+        <div class="field-group"><label>Blocks (R6.00 ea)</label><input type="number" id="blocks" min="0" value="0" step="1"></div>
 
-        <div class="section-title">💻 Software installations</div>
-        <div class="field-group"><label>Windows 10/11 installation (R200)</label><input type="number" id="winInstall" min="0" placeholder="0"></div>
+        <div class="section-title">🪨 SAND & STONES (loads)</div>
+
+        <div class="field-group"><label>River Sand Full (R900)</label><input type="number" id="riverFull" min="0" value="0"></div>
+        <div class="field-group"><label>River Sand Half (R500)</label><input type="number" id="riverHalf" min="0" value="0"></div>
+        <div class="field-group"><label>Concrete Sand Full (R900)</label><input type="number" id="concreteFull" min="0" value="0"></div>
+        <div class="field-group"><label>Concrete Sand Half (R500)</label><input type="number" id="concreteHalf" min="0" value="0"></div>
+        <div class="field-group"><label>Bou Sand Full (R700)</label><input type="number" id="bouFull" min="0" value="0"></div>
+        <div class="field-group"><label>Bou Sand Half (R500)</label><input type="number" id="bouHalf" min="0" value="0"></div>
+        <div class="field-group"><label>River Stones Full (R900)</label><input type="number" id="stonesFull" min="0" value="0"></div>
+        <div class="field-group"><label>River Stones Half (R500)</label><input type="number" id="stonesHalf" min="0" value="0"></div>
 
         <div class="section-title">💰 Loans (amount lent)</div>
         <div class="field-group"><label>Amount lent (R)</label><input type="number" id="loanPaid" min="0" step="0.01" placeholder="e.g. 500"></div>
@@ -366,7 +374,6 @@
                 <label>
                     <input type="radio" name="loanPeriod" value="14" checked> 14 days loan
                 </label>
-
                 <label>
                     <input type="radio" name="loanPeriod" value="28"> 28 days loan
                 </label>
@@ -391,23 +398,7 @@
             <input type="number" id="discount" min="0" step="0.01" placeholder="e.g. 50">
         </div>
 
-        <div class="section-title">🔌 Electronics & cables</div>
-
-        <div class="field-group"><label>5m Extension (R75)</label><input type="number" id="ext5" min="0" placeholder="0"></div>
-        <div class="field-group"><label>5m Heavy duty Extension (R85)</label><input type="number" id="extHD" min="0" placeholder="0"></div>
-        <div class="field-group"><label>Type C Laptop charger (R250)</label><input type="number" id="chargerLaptopC" min="0" placeholder="0"></div>
-        <div class="field-group"><label>Universal laptop charger (R150)</label><input type="number" id="chargerUniversal" min="0" placeholder="0"></div>
-        <div class="field-group"><label>Screen protector (R40)</label><input type="number" id="screenProtector" min="0" placeholder="0"></div>
-        <div class="field-group"><label>C type complete charger (R100)</label><input type="number" id="chargerCComplete" min="0" placeholder="0"></div>
-        <div class="field-group"><label>Complete iPhone charger (R110)</label><input type="number" id="chargerIPhone" min="0" placeholder="0"></div>
-        <div class="field-group"><label>Type C to Type C cable (R55)</label><input type="number" id="cableCtoC" min="0" placeholder="0"></div>
-        <div class="field-group"><label>Type C – Lightning cable (R60)</label><input type="number" id="cableCtoLight" min="0" placeholder="0"></div>
-        <div class="field-group"><label>30W fast charge adapter (R65)</label><input type="number" id="fastAdapter" min="0" placeholder="0"></div>
-        <div class="field-group"><label>Fast Charge USB adapter (R60)</label><input type="number" id="fastChargeUSBAdapter" min="0" placeholder="0"></div>
-        <div class="field-group"><label>USB to C cable (R50)</label><input type="number" id="usbToCCable" min="0" placeholder="0"></div>
-        <div class="field-group"><label>USB to Lightning (apple) (R55)</label><input type="number" id="usbToLightningApple" min="0" placeholder="0"></div>
-
-        <div class="section-title">➕ Manually Add Items</div>
+        <div class="section-title">✏️ Manually Add Items (materials, labour, extras)</div>
 
         <div id="manualItemsContainer" style="grid-column: span 2;"></div>
 
@@ -416,7 +407,7 @@
         <button class="generate-btn" onclick="generatePDF()">📄 Generate & Share Document</button>
 
         <div class="note">
-            AllServe Traders – quality products & support. Thank you for your business!
+            Ramalepe Brickyard – Quality building materials. Thank you for your business!
         </div>
     </div>
 </div>
@@ -482,7 +473,7 @@
         row.className = "manual-item-row";
 
         row.innerHTML = `
-            <input type="text" class="manualItemName" placeholder="Item name">
+            <input type="text" class="manualItemName" placeholder="Item name (e.g., Cement, Labour)">
             <input type="number" class="manualItemQty" min="0" placeholder="Qty">
             <input type="number" class="manualItemPrice" min="0" step="0.01" placeholder="Price R">
             <button type="button" class="manual-remove-btn" onclick="this.parentElement.remove()">X</button>
@@ -492,7 +483,7 @@
     }
 
     function getNextDocumentNumber() {
-        let storageKey = mode === "invoice" ? "AST_invoiceCounter" : "AST_quotationCounter";
+        let storageKey = mode === "invoice" ? "RB_invoiceCounter" : "RB_quotationCounter";
 
         let lastNumber = parseInt(localStorage.getItem(storageKey));
 
@@ -507,68 +498,23 @@
         return String(lastNumber).padStart(3, "0");
     }
 
-    const ppeItems = {
-        bootsShort: 340,
-        bootsHigh: 420,
-        bootsLaceless: 450,
-        suitNavy: 220,
-        suitFire: 400,
-        labCoat: 150,
-        goggles: 40,
-        gloves: 30,
-        reflector: 130,
-        helmet: 30,
-        comboFire: 450,
-        comboNavy: 270
+    // ----- PRODUCT DEFINITIONS (BRICKS + SAND/STONES) -----
+    const brickItems = {
+        rdp: { price: 3.75, name: "RDP Bricks" },
+        paving: { price: 2.00, name: "Paving Bricks" },
+        forehalves: { price: 1.90, name: "ForeHalves" },
+        blocks: { price: 6.00, name: "Blocks" }
     };
 
-    const softwareItems = {
-        winInstall: 200
-    };
-
-    const electronicsItems = {
-        ext5: 75,
-        extHD: 85,
-        chargerLaptopC: 250,
-        chargerUniversal: 150,
-        screenProtector: 40,
-        chargerCComplete: 100,
-        chargerIPhone: 110,
-        cableCtoC: 55,
-        cableCtoLight: 60,
-        fastAdapter: 65,
-        fastChargeUSBAdapter: 60,
-        usbToCCable: 50,
-        usbToLightningApple: 55
-    };
-
-    const displayNames = {
-        bootsShort: "Short-Cut Boots",
-        bootsHigh: "High-Cut Boots",
-        bootsLaceless: "Lace-less Boots",
-        suitNavy: "Standard Navy Work Suit",
-        suitFire: "Fire Resistant Work Suit",
-        labCoat: "Laboratory Coat",
-        goggles: "Goggles",
-        gloves: "Gloves",
-        reflector: "Reflector",
-        helmet: "Helmet",
-        comboFire: "COMBO: Fire suit + goggles + gloves",
-        comboNavy: "COMBO: Navy suit + goggles + gloves",
-        winInstall: "Windows 10/11 Installation",
-        ext5: "5m Extension",
-        extHD: "5m Heavy Duty Extension",
-        chargerLaptopC: "Type C Laptop Charger",
-        chargerUniversal: "Universal Laptop Charger",
-        screenProtector: "Screen Protector",
-        chargerCComplete: "C Type Complete Charger",
-        chargerIPhone: "Complete iPhone Charger",
-        cableCtoC: "Type C to Type C Cable",
-        cableCtoLight: "Type C – Lightning Cable",
-        fastAdapter: "30W Fast Charge Adapter",
-        fastChargeUSBAdapter: "Rapid Charge USB adapter",
-        usbToCCable: "USB to C cable",
-        usbToLightningApple: "USB to Lightning (apple)"
+    const sandStoneItems = {
+        riverFull: { price: 900, name: "River Sand (Full Load)" },
+        riverHalf: { price: 500, name: "River Sand (Half Load)" },
+        concreteFull: { price: 900, name: "Concrete Sand (Full Load)" },
+        concreteHalf: { price: 500, name: "Concrete Sand (Half Load)" },
+        bouFull: { price: 700, name: "Bou Sand (Full Load)" },
+        bouHalf: { price: 500, name: "Bou Sand (Half Load)" },
+        stonesFull: { price: 900, name: "River Stones (Full Load)" },
+        stonesHalf: { price: 500, name: "River Stones (Half Load)" }
     };
 
     function getInterestRateForQuotation(loanAmount, loanPeriodDays) {
@@ -577,7 +523,6 @@
         } else if (loanPeriodDays === "28") {
             return loanAmount < 600 ? 0.45 : 0.40;
         }
-
         return loanAmount < 600 ? 0.35 : 0.29;
     }
 
@@ -597,7 +542,7 @@
         let today = new Date().toLocaleDateString("en-ZA");
         let numberFormatted = getNextDocumentNumber();
 
-        let docNumber = (mode === "invoice" ? "AST-INV-" : "AST-QUO-") + numberFormatted;
+        let docNumber = (mode === "invoice" ? "RB-INV-" : "RB-QUO-") + numberFormatted;
         let title = mode === "invoice" ? "INVOICE" : "QUOTATION";
 
         const logo = new Image();
@@ -612,7 +557,6 @@
 
         function tryGenerate() {
             imagesLoaded++;
-
             if (imagesLoaded === 3) {
                 buildPDF();
             }
@@ -636,11 +580,11 @@
 
             doc.setFontSize(14);
             doc.setFont(undefined, "bold");
-            doc.text("AllServe Traders", 40, 10);
+            doc.text("Ramalepe Brickyard", 40, 10);
 
             doc.setFont(undefined, "normal");
             doc.setFontSize(7);
-            doc.text("PPE, software, electronics", 40, 15);
+            doc.text("Building materials & aggregates", 40, 15);
             doc.text("073 725 2514", 40, 20);
 
             doc.setFontSize(12);
@@ -674,18 +618,17 @@
             y += 3;
 
             let grandTotal = 0;
+            let distantDeliveryExtra = 0;
 
             function checkPageSpace() {
                 if (y > 260) {
                     doc.addPage();
                     y = 15;
-
                     doc.setFontSize(8);
                     doc.text("Description", 8, y);
                     doc.text("Qty", 120, y);
                     doc.text("Price", 145, y);
                     doc.text("Total", 175, y);
-
                     y += 2;
                     doc.line(8, y, 202, y);
                     y += 3;
@@ -695,68 +638,74 @@
             function addRow(label, qty, unitPrice) {
                 if (qty && qty > 0) {
                     checkPageSpace();
-
                     let total = qty * unitPrice;
                     grandTotal += total;
-
                     doc.setFontSize(7);
-
                     let shortLabel = label.length > 34 ? label.substring(0, 31) + "..." : label;
-
                     doc.text(shortLabel, 8, y);
                     doc.text(qty.toString(), 120, y);
                     doc.text("R" + unitPrice.toFixed(2), 145, y);
                     doc.text("R" + total.toFixed(2), 175, y);
-
                     y += 3.5;
                 }
             }
 
-            for (let id in ppeItems) {
+            // BRICKS
+            for (let id in brickItems) {
                 let qty = parseInt(document.getElementById(id)?.value) || 0;
-
                 if (qty > 0) {
-                    addRow(displayNames[id] || id, qty, ppeItems[id]);
+                    addRow(brickItems[id].name, qty, brickItems[id].price);
                 }
             }
 
-            for (let id in softwareItems) {
+            // SAND & STONES
+            for (let id in sandStoneItems) {
                 let qty = parseInt(document.getElementById(id)?.value) || 0;
-
                 if (qty > 0) {
-                    addRow(displayNames[id], qty, softwareItems[id]);
+                    addRow(sandStoneItems[id].name, qty, sandStoneItems[id].price);
                 }
             }
 
-            for (let id in electronicsItems) {
-                let qty = parseInt(document.getElementById(id)?.value) || 0;
-
-                if (qty > 0) {
-                    addRow(displayNames[id], qty, electronicsItems[id]);
+            // distant delivery surcharge (only if any sand/stone item ordered)
+            let deliverySelect = document.getElementById("deliveryType");
+            let deliveryType = deliverySelect ? deliverySelect.value : "local";
+            let sandStoneOrdered = false;
+            for (let id in sandStoneItems) {
+                if ((parseInt(document.getElementById(id)?.value) || 0) > 0) {
+                    sandStoneOrdered = true;
+                    break;
                 }
             }
+            if (deliveryType === "distant" && sandStoneOrdered) {
+                checkPageSpace();
+                doc.setFontSize(7);
+                doc.text("Distant Delivery Surcharge (Sand/Stone)", 8, y);
+                doc.text("1", 120, y);
+                doc.text("R100.00", 145, y);
+                doc.text("R100.00", 175, y);
+                y += 3.5;
+                grandTotal += 100;
+                distantDeliveryExtra = 100;
+            }
 
+            // MANUAL ITEMS
             const manualRows = document.querySelectorAll(".manual-item-row");
-
             manualRows.forEach(row => {
                 const name = row.querySelector(".manualItemName").value || "Manual Item";
                 const qty = parseInt(row.querySelector(".manualItemQty").value) || 0;
                 const price = parseFloat(row.querySelector(".manualItemPrice").value) || 0;
-
                 if (qty > 0 && price > 0) {
                     addRow(name, qty, price);
                 }
             });
 
+            // LOAN SECTION
             let loanAmount = parseFloat(document.getElementById("loanPaid")?.value) || 0;
-
             if (loanAmount > 0) {
                 checkPageSpace();
-
                 if (mode === "quotation") {
                     let selectedPeriodElem = document.querySelector('input[name="loanPeriod"]:checked');
                     let loanPeriod = selectedPeriodElem ? selectedPeriodElem.value : "14";
-
                     let interestRate = getInterestRateForQuotation(loanAmount, loanPeriod);
                     let interestAmount = loanAmount * interestRate;
                     let totalRepayment = loanAmount + interestAmount;
@@ -766,22 +715,17 @@
                     doc.text("Amount lent", 8, y);
                     doc.text("R" + loanAmount.toFixed(2), 175, y);
                     y += 3.5;
-
                     checkPageSpace();
-
                     let interestLabel = `Interest charged (${percentDisplay}% for ${loanPeriod} days)`;
-
                     doc.text(interestLabel, 8, y);
                     doc.text("R" + interestAmount.toFixed(2), 175, y);
                     y += 3.5;
-
                     grandTotal += totalRepayment;
                 } else {
                     doc.setFontSize(7);
                     doc.text("Loan amount received", 8, y);
                     doc.text("R" + loanAmount.toFixed(2), 175, y);
                     y += 3.5;
-
                     grandTotal += loanAmount;
                 }
             }
@@ -791,64 +735,51 @@
 
             if (extra > 0) {
                 checkPageSpace();
-
                 doc.setFontSize(7);
                 doc.text("Extra payment received", 8, y);
                 doc.text("R" + extra.toFixed(2), 175, y);
                 y += 3.5;
-
                 grandTotal += extra;
             }
 
             if (discount > 0) {
                 checkPageSpace();
-
                 doc.setFontSize(7);
                 doc.text("Discount given", 8, y);
                 doc.text("-R" + discount.toFixed(2), 175, y);
                 y += 3.5;
-
                 grandTotal -= discount;
             }
 
             doc.line(145, y - 1, 202, y - 1);
-
             doc.setFont(undefined, "bold");
             doc.setFontSize(9);
-
             let totalY = y + 2;
-
             if (mode === "invoice" && paidEnabled) {
                 doc.text("TOTAL: R" + grandTotal.toFixed(2), 130, totalY);
             } else {
                 doc.text("TOTAL: R" + grandTotal.toFixed(2), 145, totalY);
             }
-
             doc.setFont(undefined, "normal");
 
             let pageHeight = doc.internal.pageSize.height;
 
             if (mode === "quotation") {
                 let bankingY = pageHeight - 45;
-
                 doc.setFontSize(7);
                 doc.setFont(undefined, "bold");
                 doc.text("Banking Details", 8, bankingY);
-
                 doc.setFont(undefined, "normal");
                 bankingY += 3;
                 doc.text("Capitec Bank | Mr AN Ramalepe", 8, bankingY);
-
                 bankingY += 3;
                 doc.text("Acc: 1679556728 | Tel: 073 725 2514", 8, bankingY);
             }
 
             let signatureY = pageHeight - 25;
-
             try {
                 doc.addImage(signature, "JPEG", 150, signatureY - 6, 20, 8);
             } catch (e) {}
-
             doc.setFontSize(6);
             doc.text("Authorized signature", 150, signatureY + 4);
 
@@ -856,12 +787,11 @@
                 try {
                     doc.addImage(paidImg, "PNG", 8, signatureY - 10, 20, 10);
                 } catch (e) {}
-
                 doc.text("Payment received", 10, signatureY + 2);
             }
 
             doc.setFontSize(6);
-            doc.text("Thanks For Your Support!", 8, pageHeight - 8);
+            doc.text("Thanks for building with Ramalepe Brickyard!", 8, pageHeight - 8);
 
             const pdfBlob = doc.output("blob", { compress: true });
             const fileName = docNumber + ".pdf";
@@ -873,11 +803,10 @@
             a.click();
 
             const file = new File([pdfBlob], fileName, { type: "application/pdf" });
-
             if (navigator.canShare && navigator.canShare({ files: [file] })) {
                 navigator.share({
-                    title: title + " from AllServe",
-                    text: "Document from AllServe Traders",
+                    title: title + " from Ramalepe Brickyard",
+                    text: "Building materials document",
                     files: [file]
                 }).catch(() => {});
             }
