@@ -1,6 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+
+<script>
+if (sessionStorage.getItem("authenticated") !== "true") {
+    window.location.href = "./index.html";
+}
+
+let timeout;
+
+function resetTimer() {
+    clearTimeout(timeout);
+
+    timeout = setTimeout(() => {
+        sessionStorage.removeItem("authenticated");
+        window.location.href = "./index.html";
+    }, 300000); // 5 minutes
+}
+
+document.addEventListener("mousemove", resetTimer);
+document.addEventListener("keypress", resetTimer);
+document.addEventListener("click", resetTimer);
+document.addEventListener("scroll", resetTimer);
+
+resetTimer();
+</script>
+    
+    <head>
     <meta charset="UTF-8">
     <title>Ramalepe Brickyard · Invoice & Quotation</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
