@@ -12,17 +12,17 @@
     <button onclick="checkPin()">Login</button>
 
     <script>
-        function checkPin() {
-            const pin = document.getElementById("pin").value;
+function checkPin() {
+    const pin = document.getElementById("pin").value;
 
-            if (pin === "2003") {
-                window.location.href =
-                    "https://hossturbo.github.io/ReceiptGenerator/main.html";
-            } else {
-                alert("Incorrect PIN");
-            }
-        }
-    </script>
+    if (pin === "2003") {
+        sessionStorage.setItem("authenticated", "true");
+        window.location.href = "./main.html";
+    } else {
+        alert("Incorrect PIN");
+    }
+}
+</script>
 
 </body>
 </html>
