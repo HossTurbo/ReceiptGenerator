@@ -25,7 +25,7 @@ document.addEventListener("scroll", resetTimer);
 resetTimer();
 </script>
     
-    <head>
+<head>
 
 <script>
 if (sessionStorage.getItem("authenticated") !== "true") {
@@ -61,7 +61,7 @@ window.addEventListener("beforeunload", () => {
 
         .card {
             width: 100%;
-            max-width: 920px;
+            max-width: 980px;
             background: white;
             border-radius: 20px;
             box-shadow: 0 8px 20px rgba(0,0,0,0.1);
@@ -306,11 +306,10 @@ window.addEventListener("beforeunload", () => {
         }
     </style>
 </head>
-
 <body>
 
 <div class="card">
-    <h1>🧱 RAMALEPE BRICKYARD</h1>
+    <h1>🧱 RAMALEPE BRICKYARD (PTY) LTD</h1>
     <div class="subtitle">Building Materials · Invoice & Quotation Generator</div>
 
     <div class="mode-bar">
@@ -340,7 +339,12 @@ window.addEventListener("beforeunload", () => {
             <input type="date" id="documentDate">
         </div>
 
-        <!-- ========= DELIVERY TYPE ========= -->
+        <!-- Customer Delivery Address -->
+        <div class="field-group" style="grid-column: span 2;">
+            <label>🚚 Customer Delivery Address</label>
+            <input type="text" id="deliveryAddress" placeholder="Full delivery address (street, suburb, city)">
+        </div>
+
         <div class="field-group" style="grid-column: span 2;">
             <label>🚚 Delivery Type</label>
             <select id="deliveryType">
@@ -358,14 +362,11 @@ window.addEventListener("beforeunload", () => {
 
         <div class="section-title">🪨 SAND & STONES (loads)</div>
 
-        <div class="field-group"><label>River Sand Full (R900)</label><input type="number" id="riverFull" min="0" value="0"></div>
-        <div class="field-group"><label>River Sand Half (R500)</label><input type="number" id="riverHalf" min="0" value="0"></div>
-        <div class="field-group"><label>Concrete Sand Full (R900)</label><input type="number" id="concreteFull" min="0" value="0"></div>
-        <div class="field-group"><label>Concrete Sand Half (R500)</label><input type="number" id="concreteHalf" min="0" value="0"></div>
-        <div class="field-group"><label>Bou Sand Full (R700)</label><input type="number" id="bouFull" min="0" value="0"></div>
-        <div class="field-group"><label>Bou Sand Half (R500)</label><input type="number" id="bouHalf" min="0" value="0"></div>
-        <div class="field-group"><label>River Stones Full (R900)</label><input type="number" id="stonesFull" min="0" value="0"></div>
-        <div class="field-group"><label>River Stones Half (R500)</label><input type="number" id="stonesHalf" min="0" value="0"></div>
+        <!-- Updated items: removed half parts, new names and prices -->
+        <div class="field-group"><label>River Sand Load (R1000)</label><input type="number" id="riverLoad" min="0" value="0"></div>
+        <div class="field-group"><label>Concrete Sand Load (R1000)</label><input type="number" id="concreteLoad" min="0" value="0"></div>
+        <div class="field-group"><label>Bou Sand Load (R800)</label><input type="number" id="bouLoad" min="0" value="0"></div>
+        <div class="field-group"><label>River Stones Load (R1000)</label><input type="number" id="stonesLoad" min="0" value="0"></div>
 
         <div class="section-title">➕ Adjustments</div>
 
@@ -394,6 +395,30 @@ window.addEventListener("beforeunload", () => {
 </div>
 
 <script>
+    // ==================== AUTHENTICATION & TIMER (RESTORED) ====================
+    if (sessionStorage.getItem("authenticated") !== "true") {
+        window.location.href = "./index.html";
+    }
+
+    let authTimeout;
+    function resetAuthTimer() {
+        clearTimeout(authTimeout);
+        authTimeout = setTimeout(() => {
+            sessionStorage.removeItem("authenticated");
+            window.location.href = "./index.html";
+        }, 300000);
+    }
+    document.addEventListener("mousemove", resetAuthTimer);
+    document.addEventListener("keypress", resetAuthTimer);
+    document.addEventListener("click", resetAuthTimer);
+    document.addEventListener("scroll", resetAuthTimer);
+    resetAuthTimer();
+
+    window.addEventListener("beforeunload", () => {
+        sessionStorage.removeItem("authenticated");
+    });
+
+    // ==================== APP STATE ====================
     let mode = "invoice";
     let paidEnabled = false;
     let manualItemCount = 0;
@@ -406,7 +431,6 @@ window.addEventListener("beforeunload", () => {
 
     function setMode(selectedMode) {
         mode = selectedMode;
-
         if (mode === "invoice") {
             invoiceBtn.classList.add("active");
             quotationBtn.classList.remove("active");
@@ -424,9 +448,7 @@ window.addEventListener("beforeunload", () => {
 
     function togglePaid() {
         if (mode !== "invoice") return;
-
         paidEnabled = !paidEnabled;
-
         if (paidEnabled) {
             toggleSwitch.classList.add("active");
         } else {
@@ -434,7 +456,7 @@ window.addEventListener("beforeunload", () => {
         }
     }
 
-    // Set today's date as default value for date input
+    // Set today's date as default
     const today = new Date().toISOString().split('T')[0];
     document.getElementById("documentDate").value = today;
 
@@ -442,39 +464,31 @@ window.addEventListener("beforeunload", () => {
 
     function addManualItem() {
         manualItemCount++;
-
         const container = document.getElementById("manualItemsContainer");
-
         const row = document.createElement("div");
         row.className = "manual-item-row";
-
         row.innerHTML = `
             <input type="text" class="manualItemName" placeholder="Item name (e.g., Cement, Labour)">
             <input type="number" class="manualItemQty" min="0" placeholder="Qty">
             <input type="number" class="manualItemPrice" min="0" step="0.01" placeholder="Price R">
             <button type="button" class="manual-remove-btn" onclick="this.parentElement.remove()">X</button>
         `;
-
         container.appendChild(row);
     }
 
     function getNextDocumentNumber() {
         let storageKey = mode === "invoice" ? "RB_invoiceCounter" : "RB_quotationCounter";
-
         let lastNumber = parseInt(localStorage.getItem(storageKey));
-
         if (isNaN(lastNumber) || lastNumber < 70) {
             lastNumber = 70;
         } else {
             lastNumber += 1;
         }
-
         localStorage.setItem(storageKey, lastNumber);
-
         return String(lastNumber).padStart(3, "0");
     }
 
-    // ----- PRODUCT DEFINITIONS (BRICKS + SAND/STONES) -----
+    // Product definitions
     const brickItems = {
         rdp: { price: 3.75, name: "RDP Bricks" },
         paving: { price: 2.00, name: "Paving Bricks" },
@@ -482,61 +496,47 @@ window.addEventListener("beforeunload", () => {
         blocks: { price: 6.00, name: "Blocks" }
     };
 
+    // Updated sand/stone items: only Load variants with new pricing
     const sandStoneItems = {
-        riverFull: { price: 900, name: "River Sand (Full Load)" },
-        riverHalf: { price: 500, name: "River Sand (Half Load)" },
-        concreteFull: { price: 900, name: "Concrete Sand (Full Load)" },
-        concreteHalf: { price: 500, name: "Concrete Sand (Half Load)" },
-        bouFull: { price: 700, name: "Bou Sand (Full Load)" },
-        bouHalf: { price: 500, name: "Bou Sand (Half Load)" },
-        stonesFull: { price: 900, name: "River Stones (Full Load)" },
-        stonesHalf: { price: 500, name: "River Stones (Half Load)" }
+        riverLoad: { price: 1000, name: "River Sand Load" },
+        concreteLoad: { price: 1000, name: "Concrete Sand Load" },
+        bouLoad: { price: 800, name: "Bou Sand Load" },
+        stonesLoad: { price: 1000, name: "River Stones Load" }
     };
 
     function generatePDF() {
         const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4', compress: true });
 
-        const doc = new jsPDF({
-            orientation: 'portrait',
-            unit: 'mm',
-            format: 'a4',
-            compress: true
-        });
-
-        let y = 10;
+        // Business details (with registration, trading address, validity)
+        const businessName = "RAMALEPE BRICKYARD (PTY) LTD";
+        const regNumber = "K2026370340 (2026/370340/07)";
+        const tradingAddress = "Ramalepe Brickyard, 1594, Lephepane, Tzaneen";
+        const quotationValidity = "14 days";
 
         let client = document.getElementById("clientName").value || "N/A";
-        
-        // Get manual date or use today's date as fallback
+        let deliveryAddr = document.getElementById("deliveryAddress").value || "Not provided";
         let manualDate = document.getElementById("documentDate").value;
         let displayDate = manualDate ? new Date(manualDate).toLocaleDateString("en-ZA") : new Date().toLocaleDateString("en-ZA");
-        
         let numberFormatted = getNextDocumentNumber();
-
         let docNumber = (mode === "invoice" ? "RB-INV-" : "RB-QUO-") + numberFormatted;
-        let title = mode === "invoice" ? "INVOICE" : "QUOTATION";
+        let title = mode === "invoice" ? "TAX INVOICE" : "QUOTATION";
 
         const logo = new Image();
         const paidImg = new Image();
         const signature = new Image();
-
         logo.src = "assets/logo.jpeg";
         paidImg.src = "assets/paid.png";
         signature.src = "assets/signature.png";
 
         let imagesLoaded = 0;
-
         function tryGenerate() {
             imagesLoaded++;
-            if (imagesLoaded === 3) {
-                buildPDF();
-            }
+            if (imagesLoaded === 3) buildPDF();
         }
-
         logo.onload = tryGenerate;
         paidImg.onload = tryGenerate;
         signature.onload = tryGenerate;
-
         setTimeout(() => {
             if (imagesLoaded < 3) {
                 imagesLoaded = 3;
@@ -545,45 +545,46 @@ window.addEventListener("beforeunload", () => {
         }, 500);
 
         function buildPDF() {
-            try {
-                doc.addImage(logo, "JPEG", 8, 5, 25, 15);
-            } catch (e) {}
+            try { doc.addImage(logo, "JPEG", 8, 5, 25, 15); } catch(e) {}
 
+            // Header with registration and trading address
             doc.setFontSize(14);
             doc.setFont(undefined, "bold");
-            doc.text("Ramalepe Brickyard", 40, 10);
-
+            doc.text(businessName, 40, 10);
             doc.setFont(undefined, "normal");
             doc.setFontSize(7);
-            doc.text("Building materials & aggregates", 40, 15);
-            doc.text("065 687 7987 / 072 880 6741", 40, 20);
+            doc.text("Registration No: " + regNumber, 40, 15);
+            doc.text("Trading Address: " + tradingAddress, 40, 20);
+            doc.text("Tel: 065 687 7987 / 072 880 6741", 40, 25);
 
             doc.setFontSize(12);
             doc.text(title, 150, 10);
-
             doc.setFontSize(7);
             doc.text(docNumber, 150, 15);
-            doc.text(displayDate, 150, 20);
+            doc.text("Date: " + displayDate, 150, 20);
+            doc.text("Valid for: " + quotationValidity, 150, 25);
 
-            y = 25;
+            let y = 32;
             doc.line(8, y, 202, y);
-            y += 4;
+            y += 5;
 
+            // Bill To + Delivery Address
             doc.setFontSize(8);
             doc.text("Bill To:", 8, y);
             y += 3;
             doc.text(client, 8, y);
             y += 4;
-
+            doc.text("Delivery Address: " + deliveryAddr, 8, y);
+            y += 5;
             doc.line(8, y, 202, y);
             y += 4;
 
+            // Table headers
             doc.setFontSize(8);
             doc.text("Description", 8, y);
             doc.text("Qty", 120, y);
             doc.text("Price", 145, y);
             doc.text("Total", 175, y);
-
             y += 2;
             doc.line(8, y, 202, y);
             y += 3;
@@ -611,7 +612,7 @@ window.addEventListener("beforeunload", () => {
                     let total = qty * unitPrice;
                     grandTotal += total;
                     doc.setFontSize(7);
-                    let shortLabel = label.length > 34 ? label.substring(0, 31) + "..." : label;
+                    let shortLabel = label.length > 38 ? label.substring(0, 35) + "..." : label;
                     doc.text(shortLabel, 8, y);
                     doc.text(qty.toString(), 120, y);
                     doc.text("R" + unitPrice.toFixed(2), 145, y);
@@ -623,20 +624,16 @@ window.addEventListener("beforeunload", () => {
             // BRICKS
             for (let id in brickItems) {
                 let qty = parseInt(document.getElementById(id)?.value) || 0;
-                if (qty > 0) {
-                    addRow(brickItems[id].name, qty, brickItems[id].price);
-                }
+                if (qty > 0) addRow(brickItems[id].name, qty, brickItems[id].price);
             }
 
-            // SAND & STONES
+            // SAND & STONES (new Load items)
             for (let id in sandStoneItems) {
                 let qty = parseInt(document.getElementById(id)?.value) || 0;
-                if (qty > 0) {
-                    addRow(sandStoneItems[id].name, qty, sandStoneItems[id].price);
-                }
+                if (qty > 0) addRow(sandStoneItems[id].name, qty, sandStoneItems[id].price);
             }
 
-            // distant delivery surcharge (only if any sand/stone item ordered)
+            // distant delivery surcharge
             let deliverySelect = document.getElementById("deliveryType");
             let deliveryType = deliverySelect ? deliverySelect.value : "local";
             let sandStoneOrdered = false;
@@ -663,9 +660,7 @@ window.addEventListener("beforeunload", () => {
                 const name = row.querySelector(".manualItemName").value || "Manual Item";
                 const qty = parseInt(row.querySelector(".manualItemQty").value) || 0;
                 const price = parseFloat(row.querySelector(".manualItemPrice").value) || 0;
-                if (qty > 0 && price > 0) {
-                    addRow(name, qty, price);
-                }
+                if (qty > 0 && price > 0) addRow(name, qty, price);
             });
 
             let extra = parseFloat(document.getElementById("extraPayment")?.value) || 0;
@@ -679,7 +674,6 @@ window.addEventListener("beforeunload", () => {
                 y += 3.5;
                 grandTotal += extra;
             }
-
             if (discount > 0) {
                 checkPageSpace();
                 doc.setFontSize(7);
@@ -694,7 +688,7 @@ window.addEventListener("beforeunload", () => {
             doc.setFontSize(9);
             let totalY = y + 2;
             if (mode === "invoice" && paidEnabled) {
-                doc.text("TOTAL: R" + grandTotal.toFixed(2), 130, totalY);
+                doc.text("TOTAL (PAID): R" + grandTotal.toFixed(2), 130, totalY);
             } else {
                 doc.text("TOTAL: R" + grandTotal.toFixed(2), 145, totalY);
             }
@@ -702,63 +696,53 @@ window.addEventListener("beforeunload", () => {
 
             let pageHeight = doc.internal.pageSize.height;
 
-            if (mode === "quotation") {
-                let bankingY = pageHeight - 45;
-                doc.setFontSize(7);
-                doc.setFont(undefined, "bold");
-                doc.text("Banking Details", 8, bankingY);
-                doc.setFont(undefined, "normal");
-                bankingY += 3;
-                doc.text("RAMALEPE BRICKYARD (PTY) LTD", 8, bankingY);
-                bankingY += 3;
-                doc.text("Capitec Bank | Acc: 1055419845", 8, bankingY);
-                bankingY += 3;
-                doc.text("Tel: 065 687 7987 / 072 880 6741", 8, bankingY);
-            } else if (mode === "invoice") {
-                // Add banking details on invoices as well for reference
-                let bankingY = pageHeight - 45;
-                doc.setFontSize(7);
-                doc.setFont(undefined, "bold");
-                doc.text("Banking Details", 8, bankingY);
-                doc.setFont(undefined, "normal");
-                bankingY += 3;
-                doc.text("RAMALEPE BRICKYARD (PTY) LTD", 8, bankingY);
-                bankingY += 3;
-                doc.text("Capitec Bank | Acc: 1055419845", 8, bankingY);
-                bankingY += 3;
-                doc.text("Tel: 065 687 7987 / 072 880 6741", 8, bankingY);
-            }
+            // Footer with banking, registration, address, validity
+            let bankingY = pageHeight - 50;
+            doc.setFontSize(7);
+            doc.setFont(undefined, "bold");
+            doc.text("Banking Details", 8, bankingY);
+            doc.setFont(undefined, "normal");
+            bankingY += 3;
+            doc.text(businessName, 8, bankingY);
+            bankingY += 3;
+            doc.text("Capitec Bank | Acc: 1055419845", 8, bankingY);
+            bankingY += 3;
+            doc.text("Tel: 065 687 7987 / 072 880 6741", 8, bankingY);
+            bankingY += 3;
+            doc.text("Registration: " + regNumber, 8, bankingY);
+            bankingY += 3;
+            doc.text("Physical Address: " + tradingAddress, 8, bankingY);
+            
+            bankingY += 3;
+            doc.setFont(undefined, "italic");
+            doc.text(`✓ Valid for ${quotationValidity} from issue date.`, 8, bankingY);
+            doc.setFont(undefined, "normal");
 
-            let signatureY = pageHeight - 25;
-            try {
-                doc.addImage(signature, "PNG", 150, signatureY - 6, 20, 8);
-            } catch (e) {}
+            let signatureY = pageHeight - 18;
+            try { doc.addImage(signature, "PNG", 150, signatureY - 6, 20, 8); } catch(e) {}
             doc.setFontSize(6);
-            doc.text("Authorized signature", 150, signatureY + 4);
+            doc.text("Authorized signature", 150, signatureY + 2);
 
             if (mode === "invoice" && paidEnabled) {
-                try {
-                    doc.addImage(paidImg, "PNG", 8, signatureY - 10, 20, 10);
-                } catch (e) {}
-                doc.text("Payment received", 10, signatureY + 2);
+                try { doc.addImage(paidImg, "PNG", 8, signatureY - 12, 22, 11); } catch(e) {}
+                doc.text("Payment received", 10, signatureY);
             }
 
             doc.setFontSize(6);
             doc.text("Thanks for building with Ramalepe Brickyard!", 8, pageHeight - 8);
+            doc.text("Trading hours: Mon-Fri 7:30-17:00 | Sat 8:00-13:00", 8, pageHeight - 4);
 
             const pdfBlob = doc.output("blob", { compress: true });
             const fileName = docNumber + ".pdf";
             const pdfUrl = URL.createObjectURL(pdfBlob);
-
             const a = document.createElement("a");
             a.href = pdfUrl;
             a.download = fileName;
             a.click();
-
             const file = new File([pdfBlob], fileName, { type: "application/pdf" });
             if (navigator.canShare && navigator.canShare({ files: [file] })) {
                 navigator.share({
-                    title: title + " from Ramalepe Brickyard",
+                    title: title + " from " + businessName,
                     text: "Building materials document",
                     files: [file]
                 }).catch(() => {});
@@ -766,6 +750,5 @@ window.addEventListener("beforeunload", () => {
         }
     }
 </script>
-
 </body>
 </html>
