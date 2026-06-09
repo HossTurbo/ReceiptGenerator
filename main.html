@@ -683,9 +683,9 @@ window.addEventListener("beforeunload", () => {
             
 
             let signatureY = pageHeight - 18;
-            try { doc.addImage(signature, "PNG", 200, signatureY - 6, 20, 8); } catch(e) {}
+            try { doc.addImage(signature, "PNG", 150, signatureY - 6, 20, 13); } catch(e) {}
             doc.setFontSize(6);
-            doc.text("Authorized signature", 180, signatureY + 6);
+            doc.text("Authorized signature", 150, signatureY + 6);
 
             if (mode === "invoice" && paidEnabled) {
                 try { doc.addImage(paidImg, "PNG", 8, signatureY - 12, 22, 11); } catch(e) {}
