@@ -471,18 +471,6 @@ window.addEventListener("beforeunload", () => {
         container.appendChild(row);
     }
 
-    function getNextDocumentNumber() {
-        let storageKey = mode === "invoice" ? "RB_invoiceCounter" : "RB_quotationCounter";
-        let lastNumber = parseInt(localStorage.getItem(storageKey));
-        if (isNaN(lastNumber) || lastNumber < 70) {
-            lastNumber = 70;
-        } else {
-            lastNumber += 1;
-        }
-        localStorage.setItem(storageKey, lastNumber);
-        return String(lastNumber).padStart(3, "0");
-    }
-
     const brickItems = {
         rdp: { price: 3.75, name: "RDP Bricks" },
         paving: { price: 2.00, name: "Paving Bricks" },
@@ -510,8 +498,6 @@ window.addEventListener("beforeunload", () => {
         let deliveryAddr = document.getElementById("deliveryAddress").value || "Not provided";
         let manualDate = document.getElementById("documentDate").value;
         let displayDate = manualDate ? new Date(manualDate).toLocaleDateString("en-ZA") : new Date().toLocaleDateString("en-ZA");
-        let numberFormatted = getNextDocumentNumber();
-        let docNumber = (mode === "invoice" ? "RB-INV-" : "RB-QUO-") + numberFormatted;
         let title = mode === "invoice" ? "TAX INVOICE" : "QUOTATION";
 
         const logo = new Image();
@@ -551,9 +537,7 @@ window.addEventListener("beforeunload", () => {
             doc.setFontSize(12);
             doc.text(title, 150, 10);
             doc.setFontSize(7);
-            doc.text(docNumber, 150, 15);
             doc.text("Date: " + displayDate, 150, 20);
-            doc.text("Valid for: " + quotationValidity, 150, 25);
 
             let y = 32;
             doc.line(8, y, 202, y);
@@ -685,7 +669,6 @@ window.addEventListener("beforeunload", () => {
 
             let pageHeight = doc.internal.pageSize.height;
 
-            // ========== CLEAN BOTTOM SECTION - No weird characters ==========
             let bankingY = pageHeight - 55;
             doc.setFontSize(7);
             doc.setFont(undefined, "bold");
@@ -697,15 +680,7 @@ window.addEventListener("beforeunload", () => {
             doc.text("Capitec Bank | Account: 1055419845", 8, bankingY);
             bankingY += 3;
             doc.text("Tel: 065 687 7987 / 072 880 6741", 8, bankingY);
-            bankingY += 3;
-            doc.text("Registration: " + regNumber, 8, bankingY);
-            bankingY += 3;
-            doc.text("Physical Address: " + tradingAddress, 8, bankingY);
             
-            bankingY += 4;
-            doc.setFont(undefined, "italic");
-            doc.text("Valid for 14 days from issue date.", 8, bankingY);
-            doc.setFont(undefined, "normal");
 
             let signatureY = pageHeight - 18;
             try { doc.addImage(signature, "PNG", 150, signatureY - 6, 20, 8); } catch(e) {}
@@ -722,7 +697,7 @@ window.addEventListener("beforeunload", () => {
             doc.text("Trading hours: Mon-Fri 7:30-17:00 | Sat 8:00-13:00", 8, pageHeight - 4);
 
             const pdfBlob = doc.output("blob", { compress: true });
-            const fileName = docNumber + ".pdf";
+            const fileName = (mode === "invoice" ? "Invoice_" : "Quotation_") + client.replace(/\s+/g, '_') + "_" + displayDate.replace(/\//g, '-') + ".pdf";
             const pdfUrl = URL.createObjectURL(pdfBlob);
             const a = document.createElement("a");
             a.href = pdfUrl;
