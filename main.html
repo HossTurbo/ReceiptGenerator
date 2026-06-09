@@ -1,8 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
+
+<script>
+if (sessionStorage.getItem("authenticated") !== "true") {
+    window.location.href = "./index.html";
+}
+
+let timeout;
+
+function resetTimer() {
+    clearTimeout(timeout);
+
+    timeout = setTimeout(() => {
+        sessionStorage.removeItem("authenticated");
+        window.location.href = "./index.html";
+    }, 300000); // 5 minutes
+}
+
+document.addEventListener("mousemove", resetTimer);
+document.addEventListener("keypress", resetTimer);
+document.addEventListener("click", resetTimer);
+document.addEventListener("scroll", resetTimer);
+
+resetTimer();
+</script>
+    
 <head>
+
+<script>
+if (sessionStorage.getItem("authenticated") !== "true") {
+    window.location.href = "./index.html";
+}
+
+window.addEventListener("beforeunload", () => {
+    sessionStorage.removeItem("authenticated");
+});
+</script>
+        
     <meta charset="UTF-8">
-    <title>Allserve Traders · Invoice & Quotation</title>
+    <title>AllServe Traders · Invoice & Quotation</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -427,30 +463,27 @@
 </div>
 
 <script>
-    // ========== SESSION AUTHENTICATION & TIMEOUT (same as ramalepe code) ==========
     if (sessionStorage.getItem("authenticated") !== "true") {
         window.location.href = "./index.html";
     }
 
-    let timeout;
-    function resetTimer() {
-        clearTimeout(timeout);
-        timeout = setTimeout(() => {
+    let authTimeout;
+    function resetAuthTimer() {
+        clearTimeout(authTimeout);
+        authTimeout = setTimeout(() => {
             sessionStorage.removeItem("authenticated");
             window.location.href = "./index.html";
         }, 300000);
     }
-
-    document.addEventListener("mousemove", resetTimer);
-    document.addEventListener("keypress", resetTimer);
-    document.addEventListener("click", resetTimer);
-    document.addEventListener("scroll", resetTimer);
-    resetTimer();
+    document.addEventListener("mousemove", resetAuthTimer);
+    document.addEventListener("keypress", resetAuthTimer);
+    document.addEventListener("click", resetAuthTimer);
+    document.addEventListener("scroll", resetAuthTimer);
+    resetAuthTimer();
 
     window.addEventListener("beforeunload", () => {
         sessionStorage.removeItem("authenticated");
     });
-    // ========== END SESSION ==========
 
     let mode = "invoice";
     let paidEnabled = false;
@@ -489,7 +522,6 @@
         else toggleSwitch.classList.remove("active");
     }
 
-    // Set default date to today (but user can change manually)
     const today = new Date().toISOString().split('T')[0];
     document.getElementById("documentDate").value = today;
     setMode("invoice");
@@ -508,7 +540,6 @@
         container.appendChild(row);
     }
 
-    // Product catalogs
     const ppeItems = {
         bootsShort: { price: 340, name: "Short-Cut Boots" },
         bootsHigh: { price: 420, name: "High-Cut Boots" },
@@ -555,9 +586,8 @@
         const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4', compress: true });
 
         const businessName = "AllServe Traders";
-        const regNumber = "Registration: 2025/123456/07";
+        const regNumber = "2025/123456/07";
         const tradingAddress = "Ellispark, Doorfontein, Johannesburg";
-        const quotationValidity = "14 days";
 
         let client = document.getElementById("clientName").value || "N/A";
         let deliveryAddr = document.getElementById("deliveryAddress").value || "Not provided";
@@ -595,7 +625,7 @@
             doc.text(businessName, 40, 10);
             doc.setFont(undefined, "normal");
             doc.setFontSize(7);
-            doc.text(regNumber, 40, 15);
+            doc.text("Registration No: " + regNumber, 40, 15);
             doc.text("Trading Address: " + tradingAddress, 40, 20);
             doc.text("Tel: 073 725 2514", 40, 25);
 
@@ -659,28 +689,24 @@
                 }
             }
 
-            // PPE items
             for (let id in ppeItems) {
                 let rawVal = document.getElementById(id)?.value;
                 let qty = (rawVal && rawVal !== "") ? parseInt(rawVal) : 0;
                 if (qty > 0) addRow(ppeItems[id].name, qty, ppeItems[id].price);
             }
 
-            // Software items
             for (let id in softwareItems) {
                 let rawVal = document.getElementById(id)?.value;
                 let qty = (rawVal && rawVal !== "") ? parseInt(rawVal) : 0;
                 if (qty > 0) addRow(softwareItems[id].name, qty, softwareItems[id].price);
             }
 
-            // Electronics items
             for (let id in electronicsItems) {
                 let rawVal = document.getElementById(id)?.value;
                 let qty = (rawVal && rawVal !== "") ? parseInt(rawVal) : 0;
                 if (qty > 0) addRow(electronicsItems[id].name, qty, electronicsItems[id].price);
             }
 
-            // Manual items
             const manualRows = document.querySelectorAll(".manual-item-row");
             manualRows.forEach(row => {
                 const name = row.querySelector(".manualItemName").value || "Manual Item";
@@ -689,7 +715,6 @@
                 if (qty > 0 && price > 0) addRow(name, qty, price);
             });
 
-            // Loan handling
             let loanAmount = parseFloat(document.getElementById("loanPaid")?.value) || 0;
             if (loanAmount > 0) {
                 checkPageSpace();
@@ -775,7 +800,7 @@
 
             doc.setFontSize(6);
             doc.text("Thanks for supporting AllServe Traders!", 8, pageHeight - 8);
-            doc.text("Ellispark, Doorfontein | Trading hours: Mon-Fri 8:00-17:00", 8, pageHeight - 4);
+            doc.text("Trading hours: Mon-Fri 8:00-17:00 | Sat 9:00-13:00", 8, pageHeight - 4);
 
             const pdfBlob = doc.output("blob", { compress: true });
             const fileName = (mode === "invoice" ? "Invoice_" : "Quotation_") + client.replace(/\s+/g, '_') + "_" + displayDate.replace(/\//g, '-') + ".pdf";
