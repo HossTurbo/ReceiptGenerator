@@ -1,44 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<script>
-if (sessionStorage.getItem("authenticated") !== "true") {
-    window.location.href = "./index.html";
-}
-
-let timeout;
-
-function resetTimer() {
-    clearTimeout(timeout);
-
-    timeout = setTimeout(() => {
-        sessionStorage.removeItem("authenticated");
-        window.location.href = "./index.html";
-    }, 300000); // 5 minutes
-}
-
-document.addEventListener("mousemove", resetTimer);
-document.addEventListener("keypress", resetTimer);
-document.addEventListener("click", resetTimer);
-document.addEventListener("scroll", resetTimer);
-
-resetTimer();
-</script>
-    
 <head>
-
-<script>
-if (sessionStorage.getItem("authenticated") !== "true") {
-    window.location.href = "./index.html";
-}
-
-window.addEventListener("beforeunload", () => {
-    sessionStorage.removeItem("authenticated");
-});
-</script>
-        
     <meta charset="UTF-8">
-    <title>Ramalepe Brickyard · Invoice & Quotation</title>
+    <title>Allserve Traders · Invoice & Quotation</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -222,6 +186,47 @@ window.addEventListener("beforeunload", () => {
             font-size: 1rem;
         }
 
+        .loan-period-group {
+            grid-column: span 2;
+            background: #f8fafc;
+            padding: 8px 12px;
+            border-radius: 18px;
+            margin-top: 4px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .loan-period-group .period-label {
+            font-weight: 700;
+            color: #1e2f4d;
+            font-size: 0.85rem;
+            margin-right: 15px;
+        }
+
+        .radio-container {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: 6px;
+        }
+
+        .radio-container label {
+            font-weight: 500;
+            font-size: 0.85rem;
+            color: #1f3a5f;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+
+        .info-note {
+            font-size: 0.7rem;
+            color: #4a627a;
+            margin-top: 6px;
+            font-style: italic;
+        }
+
         .generate-btn {
             grid-column: span 2;
             background: #1e2f4d;
@@ -284,6 +289,7 @@ window.addEventListener("beforeunload", () => {
             }
 
             .section-title,
+            .loan-period-group,
             .generate-btn,
             .manual-add-btn,
             .note,
@@ -310,8 +316,8 @@ window.addEventListener("beforeunload", () => {
 <body>
 
 <div class="card">
-    <h1>🧱 RAMALEPE BRICKYARD (PTY) LTD</h1>
-    <div class="subtitle">Building Materials · Invoice & Quotation Generator</div>
+    <h1>🛠️ AllServe Traders</h1>
+    <div class="subtitle">PPE, Electronics, Software · Invoice & Quotation Generator</div>
 
     <div class="mode-bar">
         <button class="mode-btn" id="invoiceModeBtn" onclick="setMode('invoice')">📄 Invoice</button>
@@ -345,27 +351,54 @@ window.addEventListener("beforeunload", () => {
             <input type="text" id="deliveryAddress" placeholder="Full delivery address (street, suburb, city)">
         </div>
 
-        <div class="field-group" style="grid-column: span 2;">
-            <label>🚚 Delivery Type</label>
-            <select id="deliveryType">
-                <option value="local">Local Delivery (included)</option>
-                <option value="distant">Distant Delivery (+R100 Sand/Stone)</option>
-            </select>
+        <div class="section-title">🧤 PPE & WORKWEAR</div>
+
+        <div class="field-group"><label>Short-Cut Boots (R340)</label><input type="number" id="bootsShort" min="0" value="" step="1" placeholder="0"></div>
+        <div class="field-group"><label>High-Cut Boots (R420)</label><input type="number" id="bootsHigh" min="0" value="" step="1" placeholder="0"></div>
+        <div class="field-group"><label>Lace-less Boots (R450)</label><input type="number" id="bootsLaceless" min="0" value="" step="1" placeholder="0"></div>
+        <div class="field-group"><label>Standard Navy Work Suit (R220)</label><input type="number" id="suitNavy" min="0" value="" step="1" placeholder="0"></div>
+        <div class="field-group"><label>Fire Resistant Work Suit (R400)</label><input type="number" id="suitFire" min="0" value="" step="1" placeholder="0"></div>
+        <div class="field-group"><label>Laboratory Coat (R150)</label><input type="number" id="labCoat" min="0" value="" step="1" placeholder="0"></div>
+        <div class="field-group"><label>Goggles (R40)</label><input type="number" id="goggles" min="0" value="" step="1" placeholder="0"></div>
+        <div class="field-group"><label>Gloves (R30)</label><input type="number" id="gloves" min="0" value="" step="1" placeholder="0"></div>
+        <div class="field-group"><label>Reflector Vest (R130)</label><input type="number" id="reflector" min="0" value="" step="1" placeholder="0"></div>
+        <div class="field-group"><label>Hard Helmet (R30)</label><input type="number" id="helmet" min="0" value="" step="1" placeholder="0"></div>
+        <div class="field-group"><label>🔥 Fire Suit + goggles + gloves (R450)</label><input type="number" id="comboFire" min="0" value="" step="1" placeholder="0"></div>
+        <div class="field-group"><label>🔵 Navy Suit + goggles + gloves (R270)</label><input type="number" id="comboNavy" min="0" value="" step="1" placeholder="0"></div>
+
+        <div class="section-title">💻 SOFTWARE & INSTALLATIONS</div>
+        <div class="field-group"><label>Windows 10/11 installation (R200)</label><input type="number" id="winInstall" min="0" value="" step="1" placeholder="0"></div>
+
+        <div class="section-title">💰 LOANS (amount lent)</div>
+        <div class="field-group"><label>Amount lent (R)</label><input type="number" id="loanPaid" min="0" step="0.01" placeholder="e.g. 500"></div>
+
+        <div id="loanPeriodSelector" class="loan-period-group" style="display: none;">
+            <div class="period-label">📆 Loan term for interest calculation (Quotation only)</div>
+            <div class="radio-container">
+                <label><input type="radio" name="loanPeriod" value="14" checked> 14 days loan</label>
+                <label><input type="radio" name="loanPeriod" value="28"> 28 days loan</label>
+            </div>
+            <div class="info-note">
+                ✅ 14d: &lt;R600 → 35% | ≥R600 → 29% &nbsp;&nbsp;|&nbsp;&nbsp;
+                ✅ 28d: &lt;R600 → 45% | ≥R600 → 40%
+            </div>
         </div>
 
-        <div class="section-title">🧱 BRICKS & BLOCKS</div>
+        <div class="section-title">🔌 ELECTRONICS & CABLES</div>
 
-        <div class="field-group"><label>RDP Bricks (R3.75 ea)</label><input type="number" id="rdp" min="0" value="" step="1" placeholder="0"></div>
-        <div class="field-group"><label>Paving Bricks (R2.00 ea)</label><input type="number" id="paving" min="0" value="" step="1" placeholder="0"></div>
-        <div class="field-group"><label>ForeHalves (R1.90 ea)</label><input type="number" id="forehalves" min="0" value="" step="1" placeholder="0"></div>
-        <div class="field-group"><label>Blocks (R6.00 ea)</label><input type="number" id="blocks" min="0" value="" step="1" placeholder="0"></div>
-
-        <div class="section-title">🪨 SAND & STONES (loads)</div>
-
-        <div class="field-group"><label>River Sand Load (R1000)</label><input type="number" id="riverLoad" min="0" value="" placeholder="0"></div>
-        <div class="field-group"><label>Concrete Sand Load (R1000)</label><input type="number" id="concreteLoad" min="0" value="" placeholder="0"></div>
-        <div class="field-group"><label>Bou Sand Load (R800)</label><input type="number" id="bouLoad" min="0" value="" placeholder="0"></div>
-        <div class="field-group"><label>River Stones Load (R1000)</label><input type="number" id="stonesLoad" min="0" value="" placeholder="0"></div>
+        <div class="field-group"><label>5m Extension (R75)</label><input type="number" id="ext5" min="0" value="" step="1" placeholder="0"></div>
+        <div class="field-group"><label>5m Heavy duty Extension (R85)</label><input type="number" id="extHD" min="0" value="" step="1" placeholder="0"></div>
+        <div class="field-group"><label>Type C Laptop charger (R250)</label><input type="number" id="chargerLaptopC" min="0" value="" step="1" placeholder="0"></div>
+        <div class="field-group"><label>Universal laptop charger (R150)</label><input type="number" id="chargerUniversal" min="0" value="" step="1" placeholder="0"></div>
+        <div class="field-group"><label>Screen protector (R40)</label><input type="number" id="screenProtector" min="0" value="" step="1" placeholder="0"></div>
+        <div class="field-group"><label>C type complete charger (R100)</label><input type="number" id="chargerCComplete" min="0" value="" step="1" placeholder="0"></div>
+        <div class="field-group"><label>Complete iPhone charger (R110)</label><input type="number" id="chargerIPhone" min="0" value="" step="1" placeholder="0"></div>
+        <div class="field-group"><label>Type C to Type C cable (R55)</label><input type="number" id="cableCtoC" min="0" value="" step="1" placeholder="0"></div>
+        <div class="field-group"><label>Type C – Lightning cable (R60)</label><input type="number" id="cableCtoLight" min="0" value="" step="1" placeholder="0"></div>
+        <div class="field-group"><label>30W fast charge adapter (R65)</label><input type="number" id="fastAdapter" min="0" value="" step="1" placeholder="0"></div>
+        <div class="field-group"><label>Fast Charge USB adapter (R60)</label><input type="number" id="fastChargeUSBAdapter" min="0" value="" step="1" placeholder="0"></div>
+        <div class="field-group"><label>USB to C cable (R50)</label><input type="number" id="usbToCCable" min="0" value="" step="1" placeholder="0"></div>
+        <div class="field-group"><label>USB to Lightning (apple) (R55)</label><input type="number" id="usbToLightningApple" min="0" value="" step="1" placeholder="0"></div>
 
         <div class="section-title">➕ Adjustments</div>
 
@@ -379,7 +412,7 @@ window.addEventListener("beforeunload", () => {
             <input type="number" id="discount" min="0" step="0.01" placeholder="e.g. 50">
         </div>
 
-        <div class="section-title">✏️ Manually Add Items (materials, labour, extras)</div>
+        <div class="section-title">✏️ Manually Add Items (labour, extras, other products)</div>
 
         <div id="manualItemsContainer" style="grid-column: span 2;"></div>
 
@@ -388,33 +421,36 @@ window.addEventListener("beforeunload", () => {
         <button class="generate-btn" onclick="generatePDF()">📄 Generate & Share Document</button>
 
         <div class="note">
-            Ramalepe Brickyard – Quality building materials. Thank you for your business!
+            AllServe Traders – Quality products & support. Ellispark, Doorfontein. Thank you for your business!
         </div>
     </div>
 </div>
 
 <script>
+    // ========== SESSION AUTHENTICATION & TIMEOUT (same as ramalepe code) ==========
     if (sessionStorage.getItem("authenticated") !== "true") {
         window.location.href = "./index.html";
     }
 
-    let authTimeout;
-    function resetAuthTimer() {
-        clearTimeout(authTimeout);
-        authTimeout = setTimeout(() => {
+    let timeout;
+    function resetTimer() {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
             sessionStorage.removeItem("authenticated");
             window.location.href = "./index.html";
         }, 300000);
     }
-    document.addEventListener("mousemove", resetAuthTimer);
-    document.addEventListener("keypress", resetAuthTimer);
-    document.addEventListener("click", resetAuthTimer);
-    document.addEventListener("scroll", resetAuthTimer);
-    resetAuthTimer();
+
+    document.addEventListener("mousemove", resetTimer);
+    document.addEventListener("keypress", resetTimer);
+    document.addEventListener("click", resetTimer);
+    document.addEventListener("scroll", resetTimer);
+    resetTimer();
 
     window.addEventListener("beforeunload", () => {
         sessionStorage.removeItem("authenticated");
     });
+    // ========== END SESSION ==========
 
     let mode = "invoice";
     let paidEnabled = false;
@@ -425,6 +461,7 @@ window.addEventListener("beforeunload", () => {
     const quotationBtn = document.getElementById("quotationModeBtn");
     const paidToggleArea = document.getElementById("paidToggleArea");
     const toggleSwitch = document.getElementById("toggleSwitch");
+    const loanPeriodSelectorDiv = document.getElementById("loanPeriodSelector");
 
     function setMode(selectedMode) {
         mode = selectedMode;
@@ -433,6 +470,7 @@ window.addEventListener("beforeunload", () => {
             quotationBtn.classList.remove("active");
             docTypeSpan.innerText = "Invoice";
             paidToggleArea.style.display = "flex";
+            if (loanPeriodSelectorDiv) loanPeriodSelectorDiv.style.display = "none";
         } else {
             quotationBtn.classList.add("active");
             invoiceBtn.classList.remove("active");
@@ -440,19 +478,18 @@ window.addEventListener("beforeunload", () => {
             paidToggleArea.style.display = "none";
             paidEnabled = false;
             toggleSwitch.classList.remove("active");
+            if (loanPeriodSelectorDiv) loanPeriodSelectorDiv.style.display = "block";
         }
     }
 
     function togglePaid() {
         if (mode !== "invoice") return;
         paidEnabled = !paidEnabled;
-        if (paidEnabled) {
-            toggleSwitch.classList.add("active");
-        } else {
-            toggleSwitch.classList.remove("active");
-        }
+        if (paidEnabled) toggleSwitch.classList.add("active");
+        else toggleSwitch.classList.remove("active");
     }
 
+    // Set default date to today (but user can change manually)
     const today = new Date().toISOString().split('T')[0];
     document.getElementById("documentDate").value = today;
     setMode("invoice");
@@ -463,7 +500,7 @@ window.addEventListener("beforeunload", () => {
         const row = document.createElement("div");
         row.className = "manual-item-row";
         row.innerHTML = `
-            <input type="text" class="manualItemName" placeholder="Item name (e.g., Cement, Labour)">
+            <input type="text" class="manualItemName" placeholder="Item name (e.g., Labour, Extra product)">
             <input type="number" class="manualItemQty" min="0" placeholder="Qty">
             <input type="number" class="manualItemPrice" min="0" step="0.01" placeholder="Price R">
             <button type="button" class="manual-remove-btn" onclick="this.parentElement.remove()">X</button>
@@ -471,27 +508,55 @@ window.addEventListener("beforeunload", () => {
         container.appendChild(row);
     }
 
-    const brickItems = {
-        rdp: { price: 3.75, name: "RDP Bricks" },
-        paving: { price: 2.00, name: "Paving Bricks" },
-        forehalves: { price: 1.90, name: "ForeHalves" },
-        blocks: { price: 6.00, name: "Blocks" }
+    // Product catalogs
+    const ppeItems = {
+        bootsShort: { price: 340, name: "Short-Cut Boots" },
+        bootsHigh: { price: 420, name: "High-Cut Boots" },
+        bootsLaceless: { price: 450, name: "Lace-less Boots" },
+        suitNavy: { price: 220, name: "Standard Navy Work Suit" },
+        suitFire: { price: 400, name: "Fire Resistant Work Suit" },
+        labCoat: { price: 150, name: "Laboratory Coat" },
+        goggles: { price: 40, name: "Goggles" },
+        gloves: { price: 30, name: "Gloves" },
+        reflector: { price: 130, name: "Reflector Vest" },
+        helmet: { price: 30, name: "Hard Helmet" },
+        comboFire: { price: 450, name: "COMBO: Fire suit + goggles + gloves" },
+        comboNavy: { price: 270, name: "COMBO: Navy suit + goggles + gloves" }
     };
 
-    const sandStoneItems = {
-        riverLoad: { price: 1000, name: "River Sand Load" },
-        concreteLoad: { price: 1000, name: "Concrete Sand Load" },
-        bouLoad: { price: 800, name: "Bou Sand Load" },
-        stonesLoad: { price: 1000, name: "River Stones Load" }
+    const softwareItems = {
+        winInstall: { price: 200, name: "Windows 10/11 Installation" }
     };
+
+    const electronicsItems = {
+        ext5: { price: 75, name: "5m Extension" },
+        extHD: { price: 85, name: "5m Heavy Duty Extension" },
+        chargerLaptopC: { price: 250, name: "Type C Laptop Charger" },
+        chargerUniversal: { price: 150, name: "Universal Laptop Charger" },
+        screenProtector: { price: 40, name: "Screen Protector" },
+        chargerCComplete: { price: 100, name: "C Type Complete Charger" },
+        chargerIPhone: { price: 110, name: "Complete iPhone Charger" },
+        cableCtoC: { price: 55, name: "Type C to Type C Cable" },
+        cableCtoLight: { price: 60, name: "Type C – Lightning Cable" },
+        fastAdapter: { price: 65, name: "30W Fast Charge Adapter" },
+        fastChargeUSBAdapter: { price: 60, name: "Fast Charge USB Adapter" },
+        usbToCCable: { price: 50, name: "USB to C Cable" },
+        usbToLightningApple: { price: 55, name: "USB to Lightning (Apple)" }
+    };
+
+    function getInterestRateForQuotation(loanAmount, loanPeriodDays) {
+        if (loanPeriodDays === "14") return loanAmount < 600 ? 0.35 : 0.29;
+        if (loanPeriodDays === "28") return loanAmount < 600 ? 0.45 : 0.40;
+        return loanAmount < 600 ? 0.35 : 0.29;
+    }
 
     function generatePDF() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4', compress: true });
 
-        const businessName = "RAMALEPE BRICKYARD (PTY) LTD";
-        const regNumber = "K2026370340 (2026/370340/07)";
-        const tradingAddress = "Ramalepe Brickyard, 1594, Lephepane (Civic), Tzaneen";
+        const businessName = "AllServe Traders";
+        const regNumber = "Registration: 2025/123456/07";
+        const tradingAddress = "Ellispark, Doorfontein, Johannesburg";
         const quotationValidity = "14 days";
 
         let client = document.getElementById("clientName").value || "N/A";
@@ -530,9 +595,9 @@ window.addEventListener("beforeunload", () => {
             doc.text(businessName, 40, 10);
             doc.setFont(undefined, "normal");
             doc.setFontSize(7);
-            doc.text("Registration No: " + regNumber, 40, 15);
+            doc.text(regNumber, 40, 15);
             doc.text("Trading Address: " + tradingAddress, 40, 20);
-            doc.text("Tel: 065 687 7987 / 072 880 6741", 40, 25);
+            doc.text("Tel: 073 725 2514", 40, 25);
 
             doc.setFontSize(12);
             doc.text(title, 150, 10);
@@ -594,40 +659,28 @@ window.addEventListener("beforeunload", () => {
                 }
             }
 
-            for (let id in brickItems) {
+            // PPE items
+            for (let id in ppeItems) {
                 let rawVal = document.getElementById(id)?.value;
                 let qty = (rawVal && rawVal !== "") ? parseInt(rawVal) : 0;
-                if (qty > 0) addRow(brickItems[id].name, qty, brickItems[id].price);
+                if (qty > 0) addRow(ppeItems[id].name, qty, ppeItems[id].price);
             }
 
-            for (let id in sandStoneItems) {
+            // Software items
+            for (let id in softwareItems) {
                 let rawVal = document.getElementById(id)?.value;
                 let qty = (rawVal && rawVal !== "") ? parseInt(rawVal) : 0;
-                if (qty > 0) addRow(sandStoneItems[id].name, qty, sandStoneItems[id].price);
+                if (qty > 0) addRow(softwareItems[id].name, qty, softwareItems[id].price);
             }
 
-            let deliverySelect = document.getElementById("deliveryType");
-            let deliveryType = deliverySelect ? deliverySelect.value : "local";
-            let sandStoneOrdered = false;
-            for (let id in sandStoneItems) {
+            // Electronics items
+            for (let id in electronicsItems) {
                 let rawVal = document.getElementById(id)?.value;
                 let qty = (rawVal && rawVal !== "") ? parseInt(rawVal) : 0;
-                if (qty > 0) {
-                    sandStoneOrdered = true;
-                    break;
-                }
-            }
-            if (deliveryType === "distant" && sandStoneOrdered) {
-                checkPageSpace();
-                doc.setFontSize(7);
-                doc.text("Distant Delivery Surcharge (Sand/Stone)", 8, y);
-                doc.text("1", 120, y);
-                doc.text("R100.00", 145, y);
-                doc.text("R100.00", 175, y);
-                y += 3.5;
-                grandTotal += 100;
+                if (qty > 0) addRow(electronicsItems[id].name, qty, electronicsItems[id].price);
             }
 
+            // Manual items
             const manualRows = document.querySelectorAll(".manual-item-row");
             manualRows.forEach(row => {
                 const name = row.querySelector(".manualItemName").value || "Manual Item";
@@ -635,6 +688,35 @@ window.addEventListener("beforeunload", () => {
                 const price = parseFloat(row.querySelector(".manualItemPrice").value) || 0;
                 if (qty > 0 && price > 0) addRow(name, qty, price);
             });
+
+            // Loan handling
+            let loanAmount = parseFloat(document.getElementById("loanPaid")?.value) || 0;
+            if (loanAmount > 0) {
+                checkPageSpace();
+                if (mode === "quotation") {
+                    let selectedPeriodElem = document.querySelector('input[name="loanPeriod"]:checked');
+                    let loanPeriod = selectedPeriodElem ? selectedPeriodElem.value : "14";
+                    let interestRate = getInterestRateForQuotation(loanAmount, loanPeriod);
+                    let interestAmount = loanAmount * interestRate;
+                    let totalRepayment = loanAmount + interestAmount;
+                    let percentDisplay = (interestRate * 100).toFixed(0);
+                    doc.setFontSize(7);
+                    doc.text("Amount lent", 8, y);
+                    doc.text("R" + loanAmount.toFixed(2), 175, y);
+                    y += 3.5;
+                    checkPageSpace();
+                    doc.text(`Interest charged (${percentDisplay}% for ${loanPeriod} days)`, 8, y);
+                    doc.text("R" + interestAmount.toFixed(2), 175, y);
+                    y += 3.5;
+                    grandTotal += totalRepayment;
+                } else {
+                    doc.setFontSize(7);
+                    doc.text("Loan amount received", 8, y);
+                    doc.text("R" + loanAmount.toFixed(2), 175, y);
+                    y += 3.5;
+                    grandTotal += loanAmount;
+                }
+            }
 
             let extra = parseFloat(document.getElementById("extraPayment")?.value) || 0;
             let discount = parseFloat(document.getElementById("discount")?.value) || 0;
@@ -677,10 +759,9 @@ window.addEventListener("beforeunload", () => {
             bankingY += 4;
             doc.text(businessName, 8, bankingY);
             bankingY += 3;
-            doc.text("Capitec Bank | Account: 1055419845", 8, bankingY);
+            doc.text("Capitec Bank | Account: 1679556728", 8, bankingY);
             bankingY += 3;
-            doc.text("Tel: 065 687 7987 / 072 880 6741", 8, bankingY);
-            
+            doc.text("Tel: 073 725 2514", 8, bankingY);
 
             let signatureY = pageHeight - 18;
             try { doc.addImage(signature, "PNG", 170, signatureY - 6, 20, 13); } catch(e) {}
@@ -693,8 +774,8 @@ window.addEventListener("beforeunload", () => {
             }
 
             doc.setFontSize(6);
-            doc.text("Thanks for building with Ramalepe Brickyard!", 8, pageHeight - 8);
-            doc.text("Trading hours: Mon-Fri 7:30-17:00 | Sat 8:00-13:00", 8, pageHeight - 4);
+            doc.text("Thanks for supporting AllServe Traders!", 8, pageHeight - 8);
+            doc.text("Ellispark, Doorfontein | Trading hours: Mon-Fri 8:00-17:00", 8, pageHeight - 4);
 
             const pdfBlob = doc.output("blob", { compress: true });
             const fileName = (mode === "invoice" ? "Invoice_" : "Quotation_") + client.replace(/\s+/g, '_') + "_" + displayDate.replace(/\//g, '-') + ".pdf";
@@ -707,7 +788,7 @@ window.addEventListener("beforeunload", () => {
             if (navigator.canShare && navigator.canShare({ files: [file] })) {
                 navigator.share({
                     title: title + " from " + businessName,
-                    text: "Building materials document",
+                    text: "Document from AllServe Traders",
                     files: [file]
                 }).catch(() => {});
             }
