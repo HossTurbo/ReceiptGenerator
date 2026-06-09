@@ -669,7 +669,7 @@ window.addEventListener("beforeunload", () => {
 
             let pageHeight = doc.internal.pageSize.height;
 
-            let bankingY = pageHeight - 40;
+            let bankingY = pageHeight - 35;
             doc.setFontSize(7);
             doc.setFont(undefined, "bold");
             doc.text("Banking Details", 8, bankingY);
@@ -685,7 +685,7 @@ window.addEventListener("beforeunload", () => {
             let signatureY = pageHeight - 18;
             try { doc.addImage(signature, "PNG", 150, signatureY - 6, 20, 8); } catch(e) {}
             doc.setFontSize(6);
-            doc.text("Authorized signature", 150, signatureY + 2);
+            doc.text("Authorized signature", 150, signatureY + 10);
 
             if (mode === "invoice" && paidEnabled) {
                 try { doc.addImage(paidImg, "PNG", 8, signatureY - 12, 22, 11); } catch(e) {}
