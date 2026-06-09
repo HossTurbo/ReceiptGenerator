@@ -199,16 +199,18 @@ window.addEventListener("beforeunload", () => {
             margin-top: 2px;
         }
 
-        input:focus, select:focus {
-            outline: none;
-            border-color: #2b4f8e;
-            box-shadow: 0 0 0 3px rgba(30,47,77,0.1);
-        }
-
+        /* Placeholder styling for hint effect */
         input::placeholder {
             color: #9aa9bd;
             opacity: 1;
             font-size: 0.8rem;
+            font-style: italic;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #2b4f8e;
+            box-shadow: 0 0 0 3px rgba(30,47,77,0.1);
         }
 
         .section-title {
@@ -355,18 +357,19 @@ window.addEventListener("beforeunload", () => {
 
         <div class="section-title">🧱 BRICKS & BLOCKS</div>
 
-        <div class="field-group"><label>RDP Bricks (R3.75 ea)</label><input type="number" id="rdp" min="0" value="0" step="1"></div>
-        <div class="field-group"><label>Paving Bricks (R2.00 ea)</label><input type="number" id="paving" min="0" value="0" step="1"></div>
-        <div class="field-group"><label>ForeHalves (R1.90 ea)</label><input type="number" id="forehalves" min="0" value="0" step="1"></div>
-        <div class="field-group"><label>Blocks (R6.00 ea)</label><input type="number" id="blocks" min="0" value="0" step="1"></div>
+        <!-- Inputs with placeholder hints instead of default zeros -->
+        <div class="field-group"><label>RDP Bricks (R3.75 ea)</label><input type="number" id="rdp" min="0" value="" step="1" placeholder="0"></div>
+        <div class="field-group"><label>Paving Bricks (R2.00 ea)</label><input type="number" id="paving" min="0" value="" step="1" placeholder="0"></div>
+        <div class="field-group"><label>ForeHalves (R1.90 ea)</label><input type="number" id="forehalves" min="0" value="" step="1" placeholder="0"></div>
+        <div class="field-group"><label>Blocks (R6.00 ea)</label><input type="number" id="blocks" min="0" value="" step="1" placeholder="0"></div>
 
         <div class="section-title">🪨 SAND & STONES (loads)</div>
 
-        <!-- Updated items: removed half parts, new names and prices -->
-        <div class="field-group"><label>River Sand Load (R1000)</label><input type="number" id="riverLoad" min="0" value="0"></div>
-        <div class="field-group"><label>Concrete Sand Load (R1000)</label><input type="number" id="concreteLoad" min="0" value="0"></div>
-        <div class="field-group"><label>Bou Sand Load (R800)</label><input type="number" id="bouLoad" min="0" value="0"></div>
-        <div class="field-group"><label>River Stones Load (R1000)</label><input type="number" id="stonesLoad" min="0" value="0"></div>
+        <!-- Updated items: placeholder hints instead of zeros -->
+        <div class="field-group"><label>River Sand Load (R1000)</label><input type="number" id="riverLoad" min="0" value="" placeholder="0"></div>
+        <div class="field-group"><label>Concrete Sand Load (R1000)</label><input type="number" id="concreteLoad" min="0" value="" placeholder="0"></div>
+        <div class="field-group"><label>Bou Sand Load (R800)</label><input type="number" id="bouLoad" min="0" value="" placeholder="0"></div>
+        <div class="field-group"><label>River Stones Load (R1000)</label><input type="number" id="stonesLoad" min="0" value="" placeholder="0"></div>
 
         <div class="section-title">➕ Adjustments</div>
 
@@ -395,7 +398,7 @@ window.addEventListener("beforeunload", () => {
 </div>
 
 <script>
-    // ==================== AUTHENTICATION & TIMER (RESTORED) ====================
+    // ==================== AUTHENTICATION & TIMER ====================
     if (sessionStorage.getItem("authenticated") !== "true") {
         window.location.href = "./index.html";
     }
@@ -496,7 +499,6 @@ window.addEventListener("beforeunload", () => {
         blocks: { price: 6.00, name: "Blocks" }
     };
 
-    // Updated sand/stone items: only Load variants with new pricing
     const sandStoneItems = {
         riverLoad: { price: 1000, name: "River Sand Load" },
         concreteLoad: { price: 1000, name: "Concrete Sand Load" },
@@ -508,10 +510,10 @@ window.addEventListener("beforeunload", () => {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4', compress: true });
 
-        // Business details (with registration, trading address, validity)
+        // Business details - Updated location: Lephepane (Civic)
         const businessName = "RAMALEPE BRICKYARD (PTY) LTD";
         const regNumber = "K2026370340 (2026/370340/07)";
-        const tradingAddress = "Ramalepe Brickyard, 1594, Lephepane, Tzaneen";
+        const tradingAddress = "Ramalepe Brickyard, 1594, Lephepane (Civic), Tzaneen";
         const quotationValidity = "14 days";
 
         let client = document.getElementById("clientName").value || "N/A";
@@ -621,15 +623,17 @@ window.addEventListener("beforeunload", () => {
                 }
             }
 
-            // BRICKS
+            // BRICKS - only if value is entered and >0 (empty/placeholder treated as 0)
             for (let id in brickItems) {
-                let qty = parseInt(document.getElementById(id)?.value) || 0;
+                let rawVal = document.getElementById(id)?.value;
+                let qty = (rawVal && rawVal !== "") ? parseInt(rawVal) : 0;
                 if (qty > 0) addRow(brickItems[id].name, qty, brickItems[id].price);
             }
 
-            // SAND & STONES (new Load items)
+            // SAND & STONES
             for (let id in sandStoneItems) {
-                let qty = parseInt(document.getElementById(id)?.value) || 0;
+                let rawVal = document.getElementById(id)?.value;
+                let qty = (rawVal && rawVal !== "") ? parseInt(rawVal) : 0;
                 if (qty > 0) addRow(sandStoneItems[id].name, qty, sandStoneItems[id].price);
             }
 
@@ -638,7 +642,9 @@ window.addEventListener("beforeunload", () => {
             let deliveryType = deliverySelect ? deliverySelect.value : "local";
             let sandStoneOrdered = false;
             for (let id in sandStoneItems) {
-                if ((parseInt(document.getElementById(id)?.value) || 0) > 0) {
+                let rawVal = document.getElementById(id)?.value;
+                let qty = (rawVal && rawVal !== "") ? parseInt(rawVal) : 0;
+                if (qty > 0) {
                     sandStoneOrdered = true;
                     break;
                 }
@@ -696,8 +702,8 @@ window.addEventListener("beforeunload", () => {
 
             let pageHeight = doc.internal.pageSize.height;
 
-            // Footer with banking, registration, address, validity
-            let bankingY = pageHeight - 50;
+            // Footer with banking details - cleaned up and properly formatted
+            let bankingY = pageHeight - 52;
             doc.setFontSize(7);
             doc.setFont(undefined, "bold");
             doc.text("Banking Details", 8, bankingY);
@@ -705,7 +711,7 @@ window.addEventListener("beforeunload", () => {
             bankingY += 3;
             doc.text(businessName, 8, bankingY);
             bankingY += 3;
-            doc.text("Capitec Bank | Acc: 1055419845", 8, bankingY);
+            doc.text("Capitec Bank | Account: 1055419845", 8, bankingY);
             bankingY += 3;
             doc.text("Tel: 065 687 7987 / 072 880 6741", 8, bankingY);
             bankingY += 3;
@@ -713,7 +719,7 @@ window.addEventListener("beforeunload", () => {
             bankingY += 3;
             doc.text("Physical Address: " + tradingAddress, 8, bankingY);
             
-            bankingY += 3;
+            bankingY += 4;
             doc.setFont(undefined, "italic");
             doc.text(`✓ Valid for ${quotationValidity} from issue date.`, 8, bankingY);
             doc.setFont(undefined, "normal");
