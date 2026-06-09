@@ -685,7 +685,7 @@ window.addEventListener("beforeunload", () => {
 
             let pageHeight = doc.internal.pageSize.height;
 
-            // ========== FIXED BOTTOM SECTION - Clean bank details and validity ==========
+            // ========== CLEAN BOTTOM SECTION - No weird characters ==========
             let bankingY = pageHeight - 55;
             doc.setFontSize(7);
             doc.setFont(undefined, "bold");
@@ -704,7 +704,7 @@ window.addEventListener("beforeunload", () => {
             
             bankingY += 4;
             doc.setFont(undefined, "italic");
-            doc.text("✓ Valid for 14 days from issue date.", 8, bankingY);
+            doc.text("Valid for 14 days from issue date.", 8, bankingY);
             doc.setFont(undefined, "normal");
 
             let signatureY = pageHeight - 18;
