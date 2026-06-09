@@ -199,7 +199,6 @@ window.addEventListener("beforeunload", () => {
             margin-top: 2px;
         }
 
-        /* Placeholder styling for hint effect */
         input::placeholder {
             color: #9aa9bd;
             opacity: 1;
@@ -341,7 +340,6 @@ window.addEventListener("beforeunload", () => {
             <input type="date" id="documentDate">
         </div>
 
-        <!-- Customer Delivery Address -->
         <div class="field-group" style="grid-column: span 2;">
             <label>🚚 Customer Delivery Address</label>
             <input type="text" id="deliveryAddress" placeholder="Full delivery address (street, suburb, city)">
@@ -357,7 +355,6 @@ window.addEventListener("beforeunload", () => {
 
         <div class="section-title">🧱 BRICKS & BLOCKS</div>
 
-        <!-- Inputs with placeholder hints instead of default zeros -->
         <div class="field-group"><label>RDP Bricks (R3.75 ea)</label><input type="number" id="rdp" min="0" value="" step="1" placeholder="0"></div>
         <div class="field-group"><label>Paving Bricks (R2.00 ea)</label><input type="number" id="paving" min="0" value="" step="1" placeholder="0"></div>
         <div class="field-group"><label>ForeHalves (R1.90 ea)</label><input type="number" id="forehalves" min="0" value="" step="1" placeholder="0"></div>
@@ -365,7 +362,6 @@ window.addEventListener("beforeunload", () => {
 
         <div class="section-title">🪨 SAND & STONES (loads)</div>
 
-        <!-- Updated items: placeholder hints instead of zeros -->
         <div class="field-group"><label>River Sand Load (R1000)</label><input type="number" id="riverLoad" min="0" value="" placeholder="0"></div>
         <div class="field-group"><label>Concrete Sand Load (R1000)</label><input type="number" id="concreteLoad" min="0" value="" placeholder="0"></div>
         <div class="field-group"><label>Bou Sand Load (R800)</label><input type="number" id="bouLoad" min="0" value="" placeholder="0"></div>
@@ -398,7 +394,6 @@ window.addEventListener("beforeunload", () => {
 </div>
 
 <script>
-    // ==================== AUTHENTICATION & TIMER ====================
     if (sessionStorage.getItem("authenticated") !== "true") {
         window.location.href = "./index.html";
     }
@@ -421,7 +416,6 @@ window.addEventListener("beforeunload", () => {
         sessionStorage.removeItem("authenticated");
     });
 
-    // ==================== APP STATE ====================
     let mode = "invoice";
     let paidEnabled = false;
     let manualItemCount = 0;
@@ -459,10 +453,8 @@ window.addEventListener("beforeunload", () => {
         }
     }
 
-    // Set today's date as default
     const today = new Date().toISOString().split('T')[0];
     document.getElementById("documentDate").value = today;
-
     setMode("invoice");
 
     function addManualItem() {
@@ -491,7 +483,6 @@ window.addEventListener("beforeunload", () => {
         return String(lastNumber).padStart(3, "0");
     }
 
-    // Product definitions
     const brickItems = {
         rdp: { price: 3.75, name: "RDP Bricks" },
         paving: { price: 2.00, name: "Paving Bricks" },
@@ -510,7 +501,6 @@ window.addEventListener("beforeunload", () => {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4', compress: true });
 
-        // Business details - Updated location: Lephepane (Civic)
         const businessName = "RAMALEPE BRICKYARD (PTY) LTD";
         const regNumber = "K2026370340 (2026/370340/07)";
         const tradingAddress = "Ramalepe Brickyard, 1594, Lephepane (Civic), Tzaneen";
@@ -549,7 +539,6 @@ window.addEventListener("beforeunload", () => {
         function buildPDF() {
             try { doc.addImage(logo, "JPEG", 8, 5, 25, 15); } catch(e) {}
 
-            // Header with registration and trading address
             doc.setFontSize(14);
             doc.setFont(undefined, "bold");
             doc.text(businessName, 40, 10);
@@ -570,7 +559,6 @@ window.addEventListener("beforeunload", () => {
             doc.line(8, y, 202, y);
             y += 5;
 
-            // Bill To + Delivery Address
             doc.setFontSize(8);
             doc.text("Bill To:", 8, y);
             y += 3;
@@ -581,7 +569,6 @@ window.addEventListener("beforeunload", () => {
             doc.line(8, y, 202, y);
             y += 4;
 
-            // Table headers
             doc.setFontSize(8);
             doc.text("Description", 8, y);
             doc.text("Qty", 120, y);
@@ -623,21 +610,18 @@ window.addEventListener("beforeunload", () => {
                 }
             }
 
-            // BRICKS - only if value is entered and >0 (empty/placeholder treated as 0)
             for (let id in brickItems) {
                 let rawVal = document.getElementById(id)?.value;
                 let qty = (rawVal && rawVal !== "") ? parseInt(rawVal) : 0;
                 if (qty > 0) addRow(brickItems[id].name, qty, brickItems[id].price);
             }
 
-            // SAND & STONES
             for (let id in sandStoneItems) {
                 let rawVal = document.getElementById(id)?.value;
                 let qty = (rawVal && rawVal !== "") ? parseInt(rawVal) : 0;
                 if (qty > 0) addRow(sandStoneItems[id].name, qty, sandStoneItems[id].price);
             }
 
-            // distant delivery surcharge
             let deliverySelect = document.getElementById("deliveryType");
             let deliveryType = deliverySelect ? deliverySelect.value : "local";
             let sandStoneOrdered = false;
@@ -660,7 +644,6 @@ window.addEventListener("beforeunload", () => {
                 grandTotal += 100;
             }
 
-            // MANUAL ITEMS
             const manualRows = document.querySelectorAll(".manual-item-row");
             manualRows.forEach(row => {
                 const name = row.querySelector(".manualItemName").value || "Manual Item";
@@ -702,13 +685,13 @@ window.addEventListener("beforeunload", () => {
 
             let pageHeight = doc.internal.pageSize.height;
 
-            // Footer with banking details - cleaned up and properly formatted
-            let bankingY = pageHeight - 52;
+            // ========== FIXED BOTTOM SECTION - Clean bank details and validity ==========
+            let bankingY = pageHeight - 55;
             doc.setFontSize(7);
             doc.setFont(undefined, "bold");
             doc.text("Banking Details", 8, bankingY);
             doc.setFont(undefined, "normal");
-            bankingY += 3;
+            bankingY += 4;
             doc.text(businessName, 8, bankingY);
             bankingY += 3;
             doc.text("Capitec Bank | Account: 1055419845", 8, bankingY);
@@ -721,7 +704,7 @@ window.addEventListener("beforeunload", () => {
             
             bankingY += 4;
             doc.setFont(undefined, "italic");
-            doc.text(`✓ Valid for ${quotationValidity} from issue date.`, 8, bankingY);
+            doc.text("✓ Valid for 14 days from issue date.", 8, bankingY);
             doc.setFont(undefined, "normal");
 
             let signatureY = pageHeight - 18;
