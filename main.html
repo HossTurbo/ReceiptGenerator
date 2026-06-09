@@ -498,7 +498,7 @@ window.addEventListener("beforeunload", () => {
         let deliveryAddr = document.getElementById("deliveryAddress").value || "Not provided";
         let manualDate = document.getElementById("documentDate").value;
         let displayDate = manualDate ? new Date(manualDate).toLocaleDateString("en-ZA") : new Date().toLocaleDateString("en-ZA");
-        let title = mode === "invoice" ? "TAX INVOICE" : "QUOTATION";
+        let title = mode === "invoice" ? "INVOICE" : "QUOTATION";
 
         const logo = new Image();
         const paidImg = new Image();
